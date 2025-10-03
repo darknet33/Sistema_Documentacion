@@ -1,0 +1,43 @@
+Comando para sacar mi estructura 
+tree src /f > estructura.txt
+
+src/
+├── api/                # Llamadas HTTP al backend
+│   ├── auth.ts
+│   ├── users.ts
+│   └── ...
+├── assets/             # Logos, imágenes, íconos
+│   └── logo.svg
+├── components/         # UI reusables
+│   ├── forms/
+│   │   ├── LoginForm.tsx
+│   │   └── UserForm.tsx
+│   ├── tables/
+│   │   └── UserTable.tsx
+│   ├── ui/
+│   │   ├── LoadingScreen.tsx
+│   │   └── Sidebar.tsx
+│   └── index.ts        # barrel file (exporta todo)
+├── config/             # Configuración global
+│   ├── api.ts
+│   └── constants.ts
+├── hooks/              # Hooks personalizados
+│   ├── AuthContext.tsx
+│   ├── useAuth.ts
+│   ├── useMenu.tsx
+│   └── useUsers.ts
+├── pages/              # Vistas que representan rutas
+│   ├── Dashboard.tsx
+│   ├── Landing.tsx
+│   ├── Login.tsx
+│   ├── SignIn.tsx
+│   └── Users.tsx
+├── routes/             # Configuración de rutas
+│   └── ProtectedRoute.tsx
+├── types/              # Tipos de TypeScript
+│   ├── auths.ts
+│   └── users.ts
+├── utils/              # Helpers y funciones puras
+│   ├── formatDate.ts
+│   └── validators.ts
+└── App.tsx

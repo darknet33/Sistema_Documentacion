@@ -1,0 +1,44 @@
+import { Routes, Route } from 'react-router-dom';
+import { useAuth } from '../hooks/AuthContext';
+import Landing from '../pages/Landing';
+import Login from '../pages/Login';
+import Dashboard from '../pages/Dashboard';
+import Users from '../pages/Users';
+import Signin from '../pages/SignIn';
+import ProtectedRoute from './ProtectedRoute';
+import { LoadingScreen } from '../components/';
+
+const AppRoutes = () => {
+    const { isAuthenticated, user } = useAuth();
+
+    // Muestra loading mientras se determina el estado inicial
+    if (user === undefined) return <LoadingScreen />;
+
+    return (
+        <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signin" element={<Signin />} />
+
+            <Route
+                path="/dashboard"
+                element={
+                    <ProtectedRoute isAuthenticated={isAuthenticated}>
+                        <Dashboard />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/usuarios"
+                element={
+                    <ProtectedRoute isAuthenticated={isAuthenticated}>
+                        <Users />
+                    </ProtectedRoute>
+                }
+            />
+        </Routes>
+    );
+};
+
+export default AppRoutes;
