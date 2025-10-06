@@ -18,8 +18,9 @@ class PerfilUpdate(BaseModel):
 
 class PerfilOut(PerfilBase):
     id: int
-    usuario_id: int
-    fecha_actualizacion: datetime
+    nombres: str
+    apellidos: str
+    telefono: Optional[str] = None
 
     class Config:
         from_attributes = True

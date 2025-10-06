@@ -1,12 +1,11 @@
 // src/api/authFetch.ts
 import { FULL_API_URL } from "../config/api";
-import { ACCESS_TOKEN_KEY } from "../config/constants"; // 👈 importa tu clave real
+import { ACCESS_TOKEN_KEY } from "../config/constants";
 
 export const authFetch = async (
     endpoint: string,
     options: RequestInit = {}
 ) => {
-    // 👇 ahora sí busca el token correcto
     const token = localStorage.getItem(ACCESS_TOKEN_KEY);
 
     let optionHeaders: Record<string, string> = {};
@@ -23,7 +22,7 @@ export const authFetch = async (
     const headers: Record<string, string> = {
         "Content-Type": "application/json",
         ...optionHeaders,
-        ...(token ? { Authorization: `Bearer ${token}` } : {}), // 👈 ahora sí viaja el token
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
     };
 
     const response = await fetch(`${FULL_API_URL}${endpoint}`, {
