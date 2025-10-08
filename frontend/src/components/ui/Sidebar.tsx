@@ -1,6 +1,6 @@
 // src/components/Sidebar.tsx
 import { LogOut, LayoutDashboard } from "lucide-react";
-import { useAuth } from "../../hooks/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { useMenu } from "../../hooks/useMenu";
 import { LoadingScreen } from "./LoadingScreen";
 import { UserInfo } from "./UserInfo";

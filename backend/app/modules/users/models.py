@@ -1,7 +1,8 @@
+# src/app/modules/users/models.py
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, Enum
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from app.core.database import Base # Importamos la Base declarativa
+from app.core.database import Base
 
 class User(Base):
     """Modelo de base de datos para la tabla 'usuarios'."""
@@ -17,7 +18,4 @@ class User(Base):
     activo = Column(Boolean, default=True, nullable=False)
     fecha_creacion = Column(DateTime, default=func.now(), nullable=False)
 
-    perfil = relationship("Perfil", back_populates="usuario", uselist=False)  # 1 a 1
-    
-    def __repr__(self):
-        return f"<User(email='{self.email}')>"
+    perfil = relationship("Perfil", back_populates="usuario", uselist=False, cascade="all, delete-orphan")

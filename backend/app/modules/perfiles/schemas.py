@@ -1,7 +1,6 @@
 # src/app/modules/perfiles/schemas.py
 from pydantic import BaseModel
 from typing import Optional
-from datetime import datetime
 
 class PerfilBase(BaseModel):
     nombres: str
@@ -9,7 +8,7 @@ class PerfilBase(BaseModel):
     telefono: Optional[str] = None
 
 class PerfilCreate(PerfilBase):
-    usuario_id: int  # Obligatorio al crear
+    pass
 
 class PerfilUpdate(BaseModel):
     nombres: Optional[str] = None
@@ -18,9 +17,5 @@ class PerfilUpdate(BaseModel):
 
 class PerfilOut(PerfilBase):
     id: int
-    nombres: str
-    apellidos: str
-    telefono: Optional[str] = None
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}

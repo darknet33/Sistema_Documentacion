@@ -1,6 +1,6 @@
-// src/hooks/AuthContext.tsx
+// src/context/AuthContext.tsx
 import React, { createContext, useContext } from 'react';
-import { useAuth as useAuthHook } from './useAuth';
+import { useAuth as useAuthHook } from '../hooks/useAuth';
 import type { AuthContextType } from '../types/auths';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);

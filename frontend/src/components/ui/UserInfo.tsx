@@ -1,6 +1,19 @@
 import { User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/AuthContext";
+import { useAuth } from "../../context/AuthContext";
+
+export function tipoUsuario(tipo_usuario: string) {
+    let tipo = "";
+    if (tipo_usuario === "administrador") {
+        tipo = "Administrador"
+    } else if (tipo_usuario === "administrativo") {
+        tipo = "Plantel Administrativo"
+    } else if (tipo_usuario === "padre_familia") {
+        tipo = "Padre / Tutor"
+    }
+
+    return tipo;
+}
 
 export function UserInfo() {
   const navigate = useNavigate();
@@ -13,8 +26,8 @@ export function UserInfo() {
       title="Ver mi perfil"
     >
       <User className="h-16 w-16 text-indigo-600 mb-3" />
-      <p className="font-semibold text-lg text-gray-900">{user?.email.split("@")[0]}</p>
-      <p className="text-sm text-gray-500 mb-2">{user?.tipo_usuario}</p>
+      <p className="font-semibold text-lg text-gray-900">{`${user?.perfil?.nombres} ${user?.perfil?.apellidos}`}</p>
+      <p className="text-sm text-gray-500 mb-2">{tipoUsuario(user?.tipo_usuario ?? "")}</p>
 
     </div>
   );

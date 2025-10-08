@@ -43,7 +43,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
         expire = datetime.now(timezone.utc) + expires_delta
     else:
         # Token de Acceso: 15 minutos
-        expire = datetime.now(timezone.utc) + timedelta(minutes=15) 
+        expire = datetime.now(timezone.utc) + timedelta(minutes=30) 
         
     to_encode.update({"exp": expire, "type": "access"})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
@@ -55,8 +55,8 @@ def create_refresh_token(data: dict, expires_delta: timedelta | None = None) -> 
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:
-        # Token de Refresco: 7 días
-        expire = datetime.now(timezone.utc) + timedelta(days=7) 
+        # Token de Acceso: 15 minutos
+        expire = datetime.now(timezone.utc) + timedelta(minutes=30) 
         
     to_encode.update({"exp": expire, "type": "refresh"})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
@@ -77,7 +77,7 @@ def decode_token(token: str) -> dict:
 # --- Dependencia para Proteger Rutas ---
 
 # Simulación de la obtención de usuario (debería consultar la DB en una app real)
-from app.modules.users.crud import get_user_by_email as get_user_from_db
+from app.modules.users.service import get_user_by_email as get_user_from_db
 
 def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> schemas.UserOut:
     """Verifica el token de acceso y retorna el objeto UserOut."""

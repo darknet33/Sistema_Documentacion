@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, LayoutDashboard, UserPlus } from 'lucide-react';
 import { LoginForm } from '../components';
-import { useAuth } from '../hooks/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { useUsers } from '../hooks/useUsers';
 
 const Login = () => {

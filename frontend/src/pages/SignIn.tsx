@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserForm } from '../components';
 import { useUsers } from '../hooks/useUsers';
-import { useAuth } from '../hooks/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { type NewUser } from '../types/users';
 
 const SignIn = () => {

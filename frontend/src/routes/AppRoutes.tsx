@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import { useAuth } from '../hooks/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import Landing from '../pages/Landing';
 import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
@@ -7,6 +7,7 @@ import Users from '../pages/Users';
 import Signin from '../pages/SignIn';
 import ProtectedRoute from './ProtectedRoute';
 import { LoadingScreen } from '../components/';
+import Profile from '../pages/Profile';
 
 const AppRoutes = () => {
     const { isAuthenticated, user } = useAuth();
@@ -34,6 +35,15 @@ const AppRoutes = () => {
                 element={
                     <ProtectedRoute isAuthenticated={isAuthenticated}>
                         <Users />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/perfil"
+                element={
+                    <ProtectedRoute isAuthenticated={isAuthenticated}>
+                        <Profile  />
                     </ProtectedRoute>
                 }
             />

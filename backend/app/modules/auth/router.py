@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from typing import Annotated
 
 from app.modules.auth import schemas
-from app.modules.users import models, crud
+from app.modules.users import models, service
 
 from app.core.database import get_db
 from app.utils.auth import (
@@ -24,7 +24,7 @@ router = APIRouter(
 @router.post("/login", response_model=schemas.LoginSuccess)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """Login de usuario y generación de JWT."""
-    user = crud.get_user_by_email(db, email=form_data.username)
+    user = service.get_user_by_email(db, email=form_data.username)
     if not user or not verify_password(form_data.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -54,7 +54,7 @@ def refresh_token_endpoint(refresh_token: Annotated[str, Body(embed=True)], db: 
     email: str = payload.get("sub")
     if not email:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token de refresco inválido.")
-    user = crud.get_user_by_email(db, email=email)
+    user = service.get_user_by_email(db, email=email)
     if not user or not user.activo:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuario inactivo o no encontrado.")
     new_access_token = create_access_token(data={"sub": user.email})

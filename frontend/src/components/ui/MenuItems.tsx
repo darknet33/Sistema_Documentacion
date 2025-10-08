@@ -9,7 +9,7 @@ function MenuItems(item: MenuItem) {
     return (
         <button
             onClick={item.onClick}
-            className={`flex items-center space-x-2 w-full py-2 px-3 rounded-lg transition
+            className={`flex items-center space-x-2 w-full py-2 px-3 rounded-lg transition cursor-pointer
             ${isActive ? "bg-indigo-100 text-indigo-700 font-semibold" : "text-gray-700 hover:text-indigo-600"}`}
         >
             {item.icon}
