@@ -2,10 +2,7 @@
 import { FULL_API_URL } from "../config/api";
 import { ACCESS_TOKEN_KEY } from "../config/constants";
 
-export const authFetch = async (
-    endpoint: string,
-    options: RequestInit = {}
-) => {
+export const authFetch = async (endpoint: string, options: RequestInit = {}) => {
     const token = localStorage.getItem(ACCESS_TOKEN_KEY);
 
     let optionHeaders: Record<string, string> = {};
@@ -36,7 +33,7 @@ export const authFetch = async (
         try {
             const json = JSON.parse(text);
             errorMessage = json.detail || errorMessage;
-        } catch {}
+        } catch { }
         throw new Error(errorMessage);
     }
 

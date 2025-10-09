@@ -8,6 +8,7 @@ import Signin from '../pages/SignIn';
 import ProtectedRoute from './ProtectedRoute';
 import { LoadingScreen } from '../components/';
 import Profile from '../pages/Profile';
+import NotFound from '../pages/NotFound';
 
 const AppRoutes = () => {
     const { isAuthenticated, user } = useAuth();
@@ -20,6 +21,7 @@ const AppRoutes = () => {
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signin" element={<Signin />} />
+            <Route path="/*" element={<NotFound />} />
 
             <Route
                 path="/dashboard"
