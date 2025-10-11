@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoadingScreen, ProfileCard, ProfileForm, Sidebar } from "../components";
 import { useAuth } from "../context/AuthContext";
 import { useProfile } from "../hooks/useProfile";
@@ -6,7 +6,7 @@ import type { UserOut } from "../types/users";
 import type { NewProfile, ProfileOut, UpdateProfile } from "../types/profile";
 
 function Profile() {
-    const { user } = useAuth();
+    const { user, token, logout } = useAuth();
     const [showForm, setShowForm] = useState(false);
     const [editProfile, setEditProfile] = useState<ProfileOut | null>(null);
 
@@ -36,6 +36,12 @@ function Profile() {
     const handleCancel = () => {
         setShowForm(false);
     };
+
+    useEffect(() => {
+        if (!token) logout();
+
+    }, [token])
+
 
     return (
         <div className="min-h-screen flex bg-gray-50">

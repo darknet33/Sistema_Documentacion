@@ -23,7 +23,6 @@ def get_curso_by_id(db: Session, curso_id: int):
 def create_curso(db: Session, curso_in: schemas.CursoCreate):
     """Crea un nuevo curso"""
     # Validar nombre único
-    print(curso_in)
     existing = db.query(models.Curso).filter((models.Curso.nombre == curso_in.nombre) & (models.Curso.nivel == curso_in.nivel)).first()
     if existing:
         raise HTTPException(

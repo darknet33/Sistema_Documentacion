@@ -1,12 +1,13 @@
 // src/pages/Users.tsx
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Sidebar, CurseTable, CurseForm, LoadingScreen, Notification } from '../components';
 import { useCurse } from '../hooks/useCurse';
 import type { CurseOut, NewCurse, UpdateCurse } from '../types/curse';
+import { useAuth } from '../context/AuthContext';
 
 const Curse = () => {
   const { curser, loading, error, addCurse, updateCurse, toggleStatus, deleteCurse } = useCurse();
-
+  const { token, logout } = useAuth()
   const [showForm, setShowForm] = useState(false);
   const [editCurse, setEditCurse] = useState<CurseOut | null>(null);
   const [notification, setNotification] = useState<{ message: string; type?: 'success' | 'error' } | null>(null);
@@ -38,22 +39,27 @@ const Curse = () => {
   };
 
   const handleToggle = (curse: CurseOut) => {
-      try {
-        toggleStatus(curse.id, !curse.activo);
-        !curse.activo
+    try {
+      toggleStatus(curse.id, !curse.activo);
+      !curse.activo
         ? setNotification({ message: `Curso ${curse.nombre} ${curse.nivel} activado .`, type: 'success' })
         : setNotification({ message: `Curso ${curse.nombre} ${curse.nivel} desactivado .`, type: 'success' })
-      } catch (error) {
-        console.error(error);
-        setNotification({ message: `Error al procesar la operación. `, type: 'error' });
-      }
-    };
+    } catch (error) {
+      console.error(error);
+      setNotification({ message: `Error al procesar la operación. `, type: 'error' });
+    }
+  };
 
   const handleDelete = (curse: CurseOut) => {
     if (confirm(`¿Eliminar usuario ${curse.nombre}?`)) {
       deleteCurse(curse.id);
     }
   };
+
+  useEffect(() => {
+    if (!token) logout();
+
+  }, [token])
 
   return (
     <div className="min-h-screen flex bg-gray-50">

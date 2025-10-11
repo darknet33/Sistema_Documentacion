@@ -1,7 +1,17 @@
 // src/pages/Dashboard.tsx
+import { useEffect } from 'react';
 import { Sidebar } from '../components';
+import { useAuth } from '../context/AuthContext';
 
 const Dashboard = () => {
+
+    const { token, logout } = useAuth();
+
+    useEffect(() => {
+        if (!token) logout();
+
+    }, [token])
+
     return (
         <div className="min-h-screen flex bg-gray-50">
             <Sidebar />

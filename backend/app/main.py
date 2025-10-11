@@ -5,6 +5,7 @@ from app.modules.users import router as users_router
 from app.modules.auth import router as auth_router
 from app.modules.perfiles import router as perfiles_router
 from app.modules.cursos import router as cursos_router
+from app.modules.catalogo_documentos import router as documentos_router
 
 # Crea la aplicación FastAPI
 app = FastAPI(
@@ -40,6 +41,7 @@ app.include_router(users_router.router, prefix="/api/v1")
 app.include_router(auth_router.router, prefix="/api/v1")
 app.include_router(perfiles_router.router, prefix="/api/v1")
 app.include_router(cursos_router.router, prefix="/api/v1")
+app.include_router(documentos_router.router, prefix="/api/v1")
 
 
 @app.get("/", tags=["Root"])

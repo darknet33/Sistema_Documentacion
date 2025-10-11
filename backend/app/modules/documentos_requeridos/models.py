@@ -1,0 +1,16 @@
+# src/app/modules/documentos_requeridos/models.py
+from sqlalchemy import Column, Integer, ForeignKey, Date
+from sqlalchemy.orm import relationship
+from app.core.database import Base
+
+class DocumentoRequerido(Base):
+    __tablename__ = "documentos_requeridos"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    catalogo_documento_id = Column(Integer, ForeignKey("catalogo_documentos.id", ondelete="CASCADE"), nullable=False)
+    curso_id = Column(Integer, ForeignKey("cursos.id", ondelete="CASCADE"), nullable=False)
+    fecha_limite = Column(Date, nullable=True)
+
+    # Relaciones ORM
+    curso = relationship("Curso", backref="documentos_requeridos")
+    documento = relationship("CatalogoDocumento", backref="documentos_requeridos")

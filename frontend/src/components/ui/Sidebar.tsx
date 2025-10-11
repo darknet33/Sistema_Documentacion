@@ -1,13 +1,14 @@
 // src/components/Sidebar.tsx
-import { LogOut, LayoutDashboard } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useMenu } from "../../hooks/useMenu";
 import { LoadingScreen } from "./LoadingScreen";
 import { UserInfo } from "./UserInfo";
 import MenuItems from "./MenuItems";
+import { LogoutButton } from "./LogoutButton";
 
 export function Sidebar() {
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
 
     if (!user) return <LoadingScreen />; // seguridad: si user aún es null
 
@@ -33,13 +34,7 @@ export function Sidebar() {
 
             {/* Footer / Logout */}
             <div className="px-6 py-4 border-t border-gray-200">
-                <button
-                    onClick={logout}
-                    className="flex items-center space-x-2 px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition duration-150 shadow-md w-full justify-center"
-                >
-                    <LogOut className="h-5 w-5" />
-                    <span>Cerrar Sesión</span>
-                </button>
+                <LogoutButton/>
             </div>
         </aside>
     );

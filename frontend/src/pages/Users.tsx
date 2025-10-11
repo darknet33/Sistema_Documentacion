@@ -1,12 +1,13 @@
 // src/pages/Users.tsx
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Sidebar, UserTable, UserForm, LoadingScreen, Notification } from '../components';
 import { useUsers } from '../hooks/useUsers';
 import { type UserOut, type NewUser, type UpdateUser } from '../types/users';
+import { useAuth } from '../context/AuthContext';
 
 const Users = () => {
   const { users, loading, error, addUser, updateUser, toggleStatus, deleteUser } = useUsers();
-
+  const { token,logout } = useAuth()
   const [showForm, setShowForm] = useState(false);
   const [editUser, setEditUser] = useState<UserOut | null>(null);
   const [notification, setNotification] = useState<{ message: string; type?: 'success' | 'error' } | null>(null);
@@ -33,7 +34,7 @@ const Users = () => {
       setShowForm(false);
     } catch (error) {
       console.error(error);
-      setNotification({ message:  ` ${error} `, type: 'error' });
+      setNotification({ message: ` ${error} `, type: 'error' });
     }
   };
 
@@ -54,6 +55,12 @@ const Users = () => {
       deleteUser(user.id);
     }
   };
+
+  useEffect(() => {
+     if (!token) logout();
+  
+  }, [token])
+  
 
   return (
     <div className="min-h-screen flex bg-gray-50">

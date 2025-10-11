@@ -3,21 +3,24 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.core.database import get_db
-from . import schemas, models, service
+from . import schemas, service
+from app.modules.users.models import  User 
 from app.utils.auth import get_current_user
-from app.modules.users import models as user_models  # 👈 IMPORTA AQUÍ
 
-router = APIRouter(prefix="/perfiles", tags=["Perfiles"])
+router = APIRouter(
+    prefix="/perfiles",
+    tags=["Perfiles"]
+)
 
 @router.get("/", response_model=list[schemas.PerfilOut])
 def listar_perfiles(skip: int = 0, limit: int = 100, db: Session = Depends(get_db),
-                    current_user: user_models.User = Depends(get_current_user)):
+                    current_user: User = Depends(get_current_user)):
     return service.get_perfiles(db, skip, limit)
 
 @router.get("/", response_model=list[schemas.PerfilOut])
 def listar_perfiles(
     skip: int = 0, limit: int = 100, db: Session = Depends(get_db),
-    current_user: user_models.User = Depends(get_current_user)  # 👈 cambio aquí
+    current_user: User = Depends(get_current_user)  
 ):
     return service.get_perfiles(db, skip, limit)
 
@@ -25,7 +28,7 @@ def listar_perfiles(
 @router.get("/{usuario_id}", response_model=schemas.PerfilOut)
 def obtener_perfil(
     usuario_id: int, db: Session = Depends(get_db),
-    current_user: user_models.User = Depends(get_current_user)  # 👈 cambio aquí
+    current_user: User = Depends(get_current_user) 
 ):
     perfil = service.get_perfil_by_usuario(db, usuario_id)
     if not perfil:
@@ -36,7 +39,7 @@ def obtener_perfil(
 @router.post("/", response_model=schemas.PerfilOut, status_code=status.HTTP_201_CREATED)
 def crear_perfil(
     perfil_in: schemas.PerfilCreate, db: Session = Depends(get_db),
-    current_user: user_models.User = Depends(get_current_user)  # 👈 cambio aquí
+    current_user: User = Depends(get_current_user)
 ):
     if service.get_perfil_by_usuario(db, perfil_in.usuario_id):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El usuario ya tiene un perfil")
@@ -46,7 +49,7 @@ def crear_perfil(
 @router.put("/{usuario_id}", response_model=schemas.PerfilOut)
 def actualizar_perfil(
     usuario_id: int, updates: schemas.PerfilUpdate, db: Session = Depends(get_db),
-    current_user: user_models.User = Depends(get_current_user)  # 👈 cambio aquí
+    current_user: User = Depends(get_current_user)
 ):
     perfil = service.get_perfil_by_usuario(db, usuario_id)
     if not perfil:

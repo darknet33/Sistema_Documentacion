@@ -1,7 +1,11 @@
 // src/pages/Landing.tsx
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { LogoutButton } from '../components';
 
 const Landing = () => {
+    const { token } = useAuth()
+
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">
             {/* Header */}
@@ -12,9 +16,17 @@ const Landing = () => {
                         <strong className='font-black text-3xl text-indigo-900 '>U.E. “Dr. Aniceto Arce B”</strong>
                     </a>
                     <nav>
-                        <Link to="/login" className="px-4 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition">
-                            Login
-                        </Link>
+                        {!token
+                            ? <Link to="/login" className="px-4 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition">
+                                Login
+                            </Link>
+                            : <div className='flex gap-1'>
+                                <Link to="/dashboard" className="px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700 transition">
+                                    Dashboard
+                                </Link>
+                                <LogoutButton/>
+                            </div>
+                        }
                     </nav>
                 </div>
             </header>
