@@ -1,20 +1,11 @@
 // src/components/UserForm.tsx
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { type NewUser, type UserOut } from '../../types/users';
-import { type NewProfile } from '../../types/profile';
+import type { NewUser, UserFormProps } from '../../types/users';
+import type { NewProfile } from '../../types/profile';
 import { useNavigate } from 'react-router-dom';
 
-interface UserFormProps {
-  user?: UserOut;                     // si viene, es edición
-  loading?: boolean;                  // mostrar estado
-  error?: string | null;              // mensaje de error
-  onSubmit: (data: NewUser & { perfil?: NewProfile }) => void; // 🔥 Perfil opcional
-  onCancel?: () => void;
-  firstUserMode?: boolean;
-}
-
-export function UserForm ({
+export function UserForm({
   user,
   loading = false,
   error,
@@ -48,44 +39,44 @@ export function UserForm ({
   }, [user]);
 
   const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  let data: NewUser & { perfil?: NewProfile };
+    let data: NewUser & { perfil?: NewProfile };
 
-  if (user) {
-    // Actualización
-    data = {
-      email: email,
-      tipo_usuario: tipo,
-      password: '', // password is required by NewUser, but not used in update
-      perfil: undefined
-    };
-
-    // Perfil
-    if (user.perfil) {
-      data.perfil = {
-        nombres: nombres,
-        apellidos: apellidos,
-        telefono: telefono
+    if (user) {
+      // Actualización
+      data = {
+        email: email,
+        tipo_usuario: tipo,
+        password: '', // password is required by NewUser, but not used in update
+        perfil: undefined
       };
+
+      // Perfil
+      if (user.perfil) {
+        data.perfil = {
+          nombres: nombres,
+          apellidos: apellidos,
+          telefono: telefono
+        };
+      } else {
+        // Si no había perfil antes, lo creamos completo
+        data.perfil = { nombres, apellidos, telefono };
+      }
     } else {
-      // Si no había perfil antes, lo creamos completo
-      data.perfil = { nombres, apellidos, telefono };
+      // Creación
+      data = {
+        email,
+        password,
+        tipo_usuario: tipo,
+        perfil: { nombres, apellidos, telefono }
+      };
     }
-  } else {
-    // Creación
-    data = {
-      email,
-      password,
-      tipo_usuario: tipo,
-      perfil: { nombres, apellidos, telefono }
-    };
-  }
 
-  onSubmit(data);
+    onSubmit(data);
 
-  if (firstUserMode) navigate('/login');
-};
+    if (firstUserMode) navigate('/login');
+  };
 
 
   const handleCancel = () => {
@@ -128,6 +119,7 @@ export function UserForm ({
             className="w-full px-3 py-2 border rounded-lg"
           />
         )}
+        
         <select
           value={tipo}
           onChange={e => setTipo(e.target.value as 'administrador' | 'administrativo' | 'padre_familia')}

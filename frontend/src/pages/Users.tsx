@@ -1,6 +1,6 @@
 // src/pages/Users.tsx
 import { useState } from 'react';
-import { Sidebar, UserTable, UserForm, LoadingScreen } from '../components';
+import { Sidebar, UserTable, UserForm, LoadingScreen, Notification } from '../components';
 import { useUsers } from '../hooks/useUsers';
 import { type UserOut, type NewUser, type UpdateUser } from '../types/users';
 
@@ -9,6 +9,7 @@ const Users = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [editUser, setEditUser] = useState<UserOut | null>(null);
+  const [notification, setNotification] = useState<{ message: string; type?: 'success' | 'error' } | null>(null);
 
   const handleCreate = () => {
     setEditUser(null);
@@ -24,20 +25,28 @@ const Users = () => {
     try {
       if (editUser) {
         await updateUser(editUser.id, data as UpdateUser);
-        alert(`Usuario ${data.email} actualizado con éxito.`);
+        setNotification({ message: `Usuario ${data.perfil?.nombres} ${data.perfil?.apellidos} actualizado con éxito.`, type: 'success' });
       } else {
         await addUser(data as NewUser);
-        alert(`Usuario ${data.email} creado con éxito.`);
+        setNotification({ message: `Usuario ${data.perfil?.nombres} ${data.perfil?.apellidos} creado con éxito.`, type: 'success' });
       }
       setShowForm(false);
-    } catch (err) {
-      console.error(err);
-      alert("Error al procesar la operación.");
+    } catch (error) {
+      console.error(error);
+      setNotification({ message:  ` ${error} `, type: 'error' });
     }
   };
 
   const handleToggle = (user: UserOut) => {
-    toggleStatus(user.id, !user.activo);
+    try {
+      toggleStatus(user.id, !user.activo);
+      !user.activo
+        ? setNotification({ message: `Usuario ${user.email} activado .`, type: 'success' })
+        : setNotification({ message: `Usuario ${user.email} desactivado .`, type: 'success' })
+    } catch (error) {
+      console.error(error);
+      setNotification({ message: 'Error al procesar la operación.', type: 'error' });
+    }
   };
 
   const handleDelete = (user: UserOut) => {
@@ -48,7 +57,7 @@ const Users = () => {
 
   return (
     <div className="min-h-screen flex bg-gray-50">
-      <Sidebar/>
+      <Sidebar />
 
       <main className="flex-1 p-6">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">Panel de Usuarios</h1>
@@ -83,6 +92,13 @@ const Users = () => {
               />
             )}
           </>
+        )}
+        {notification && (
+          <Notification
+            message={notification.message}
+            type={notification.type}
+            onClose={() => setNotification(null)}
+          />
         )}
       </main>
     </div>

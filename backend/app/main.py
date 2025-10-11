@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import Base, engine
-from app.modules.users import models  # Importa los modelos para que Base.metadata los detecte
 from app.modules.users import router as users_router
 from app.modules.auth import router as auth_router
 from app.modules.perfiles import router as perfiles_router
+from app.modules.cursos import router as cursos_router
 
 # Crea la aplicación FastAPI
 app = FastAPI(
@@ -39,6 +39,7 @@ def on_startup():
 app.include_router(users_router.router, prefix="/api/v1")
 app.include_router(auth_router.router, prefix="/api/v1")
 app.include_router(perfiles_router.router, prefix="/api/v1")
+app.include_router(cursos_router.router, prefix="/api/v1")
 
 
 @app.get("/", tags=["Root"])

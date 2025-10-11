@@ -31,3 +31,12 @@ export interface UserTableProps {
     onToggle: (user: UserOut) => void;
     onDelete: (user: UserOut) => void;
 }
+
+export interface UserFormProps {
+  user?: UserOut;                     // si viene, es edición
+  loading?: boolean;                  // mostrar estado
+  error?: string | null;              // mensaje de error
+  onSubmit: (data: NewUser & { perfil?: NewProfile }) => void; // 🔥 Perfil opcional
+  onCancel?: () => void;
+  firstUserMode?: boolean;
+}

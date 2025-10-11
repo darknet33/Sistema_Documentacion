@@ -1,6 +1,6 @@
 // src/hooks/useMenu.ts
 import { type UserOut } from '../types/users';
-import { LayoutDashboard, Users, Settings } from 'lucide-react';
+import { LayoutDashboard, Users, GraduationCap } from 'lucide-react';
 import type { JSX } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ export const useMenu = (userData: UserOut): MenuItem[] => {
     administrador: [
       { label: 'Dashboard', icon: <LayoutDashboard className="h-5 w-5" />, path: '/dashboard', onClick: () => navigate('/dashboard') },
       { label: 'Usuarios', icon: <Users className="h-5 w-5" />, path: '/usuarios', onClick: () => navigate('/usuarios') },
-      { label: 'Configuración', icon: <Settings className="h-5 w-5" />, path: '/admin', onClick: () => navigate('/admin') },
+      { label: 'Cursos', icon: <GraduationCap className="h-5 w-5" />, path: '/cursos', onClick: () => navigate('/cursos') },
     ],
     administrativo: [
       { label: 'Dashboard', icon: <LayoutDashboard className="h-5 w-5" />, path: '/dashboard', onClick: () => navigate('/dashboard') },

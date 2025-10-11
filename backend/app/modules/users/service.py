@@ -66,10 +66,6 @@ def delete_user(db: Session, user_id: int) -> bool:
 
 # --- Activar / Desactivar usuario ---
 def set_user_active(db: Session, user_id: int, activo: bool) -> Optional[models.User]:
-    """
-    Cambia el estado 'activo' de un usuario.
-    Devuelve el usuario actualizado o None si no existe.
-    """
     db_user = db.query(models.User).filter(models.User.id == user_id).first()
     if not db_user:
         return None
