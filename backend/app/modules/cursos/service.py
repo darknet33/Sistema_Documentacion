@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session,joinedload
 from fastapi import HTTPException, status
 
 from . import models, schemas
@@ -71,3 +71,10 @@ def delete_curso(db: Session, curso_id: int):
     db.delete(curso)
     db.commit()
     return {"message": f"Curso con ID {curso_id} eliminado correctamente"}
+
+def get_all_cursos_completo(db: Session):
+    """Devuelve cursos con estudiantes y documentos requeridos"""
+    return db.query(models.Curso).options(
+        joinedload(models.Curso.estudiantes),
+        joinedload(models.Curso.documentos_requeridos)
+    ).all()

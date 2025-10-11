@@ -1,13 +1,20 @@
 from pydantic import BaseModel
-from typing import Optional
-
+from typing import Optional, List
+from app.modules.estudiantes.schemas import EstudianteOut
+from app.modules.documentos_requeridos.schemas import DocumentoRequeridoOut
 
 class CursoBase(BaseModel):
-    """Campos base compartidos entre los esquemas"""
     nombre: str
     nivel: str
     activo: Optional[bool] = True
 
+class CursoOut(CursoBase):
+    id: int
+    estudiantes: Optional[List[EstudianteOut]] = []
+    documentos_requeridos: Optional[List[DocumentoRequeridoOut]] = []
+
+    class Config:
+        orm_mode = True
 
 class CursoCreate(CursoBase):
     """Schema para creación de cursos"""
@@ -20,10 +27,3 @@ class CursoUpdate(BaseModel):
     nivel: Optional[str] = None
     activo: Optional[bool] = None
 
-
-class CursoOut(CursoBase):
-    """Schema para salida de datos (lectura)"""
-    id: int
-
-    class Config:
-        orm_mode = True

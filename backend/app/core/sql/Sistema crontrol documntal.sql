@@ -1,3 +1,5 @@
+-- Realizado
+
 CREATE TABLE usuarios (
   id INT PRIMARY KEY AUTO_INCREMENT,
   email VARCHAR(255) UNIQUE,
@@ -7,6 +9,7 @@ CREATE TABLE usuarios (
   fecha_creacion TIMESTAMP
 );
 
+-- Realizado
 CREATE TABLE perfiles (
   id INT PRIMARY KEY AUTO_INCREMENT,
   usuario_id INT,
@@ -17,6 +20,7 @@ CREATE TABLE perfiles (
   FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
 
+-- Realizado
 CREATE TABLE cursos (
   id INT PRIMARY KEY AUTO_INCREMENT,
   nombre VARCHAR(255) UNIQUE,
@@ -24,6 +28,7 @@ CREATE TABLE cursos (
   activo BOOLEAN DEFAULT TRUE
 );
 
+-- Realizado
 CREATE TABLE estudiantes (
   id INT PRIMARY KEY AUTO_INCREMENT,
   codigo_estudiante VARCHAR(255) UNIQUE,
@@ -46,6 +51,7 @@ CREATE TABLE padres_estudiantes (
   FOREIGN KEY (estudiante_id) REFERENCES estudiantes(id)
 );
 
+-- Realizado
 CREATE TABLE catalogo_documentos (
   id INT PRIMARY KEY AUTO_INCREMENT,
   nombre VARCHAR(255),
@@ -54,6 +60,7 @@ CREATE TABLE catalogo_documentos (
   activo BOOLEAN DEFAULT TRUE
 );
 
+-- Realizado
 CREATE TABLE documentos_requeridos (
   id INT PRIMARY KEY AUTO_INCREMENT,
   catalogo_documento_id INT,

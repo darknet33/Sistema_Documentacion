@@ -13,5 +13,5 @@ class DocumentoRequerido(Base):
     fecha_limite = Column(Date, nullable=True, default=lambda: date.today() + timedelta(days=45))
 
     # Relaciones ORM
-    curso = relationship("Curso", backref="documentos_requeridos")
+    curso = relationship("Curso", back_populates="documentos_requeridos")
     documento = relationship("CatalogoDocumento", backref="documentos_requeridos")

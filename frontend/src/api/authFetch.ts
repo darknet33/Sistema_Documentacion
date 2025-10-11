@@ -2,6 +2,12 @@
 import { FULL_API_URL } from "../config/api";
 import { ACCESS_TOKEN_KEY } from "../config/constants";
 
+// Función para limpiar token y redirigir al login
+const handleUnauthorized = () => {
+    localStorage.removeItem(ACCESS_TOKEN_KEY);
+    window.location.href = "/login"; // redirige al login
+};
+
 export const authFetch = async (endpoint: string, options: RequestInit = {}) => {
     const token = localStorage.getItem(ACCESS_TOKEN_KEY);
 
@@ -26,6 +32,12 @@ export const authFetch = async (endpoint: string, options: RequestInit = {}) => 
         ...options,
         headers,
     });
+
+    // ⚠️ Manejar token expirado o no autorizado
+    if (response.status === 401) {
+        handleUnauthorized();
+        return; // corta ejecución
+    }
 
     if (!response.ok) {
         const text = await response.text();

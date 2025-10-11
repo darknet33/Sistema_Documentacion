@@ -1,13 +1,11 @@
 // src/pages/Users.tsx
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Sidebar, CurseTable, CurseForm, LoadingScreen, Notification, DocumentosRequeridosPanel } from '../components';
 import { useCurse } from '../hooks/useCurse';
 import type { CurseOut, NewCurse, UpdateCurse } from '../types/curse';
-import { useAuth } from '../context/AuthContext';
 
 const Curse = () => {
   const { curser, loading, error, addCurse, updateCurse, toggleStatus, deleteCurse } = useCurse();
-  const { token, logout } = useAuth()
   const [showForm, setShowForm] = useState(false);
   const [editCurse, setEditCurse] = useState<CurseOut | null>(null);
   const [notification, setNotification] = useState<{ message: string; type?: 'success' | 'error' } | null>(null);
@@ -62,11 +60,6 @@ const Curse = () => {
       deleteCurse(curse.id);
     }
   };
-
-  useEffect(() => {
-    if (!token) logout();
-
-  }, [token])
 
   return (
     <div className="min-h-screen flex bg-gray-50">

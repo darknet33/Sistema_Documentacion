@@ -1,12 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Sidebar, DocumentTable, DocumentForm, LoadingScreen, Notification } from '../components';
 import { useDocument } from '../hooks/useDocuments';
-import { useAuth } from '../context/AuthContext';
 import type { DocumentOut, NewDocument, UpdateDocument } from '../types/document';
 
 const Document = () => {
     const { documents, loading, error, addDocument, updateDocument, toggleStatus, toggleObligatorio, deleteDocument } = useDocument();
-    const { token, logout } = useAuth();
 
     const [showForm, setShowForm] = useState(false);
     const [editDocument, setEditDocument] = useState<DocumentOut | null>(null);
@@ -76,12 +74,6 @@ const Document = () => {
             deleteDocument(doc.id);
         }
     };
-
-    useEffect(() => {
-        if (!token) logout();
-
-    })
-
 
     return (
         <div className="min-h-screen flex bg-gray-50">

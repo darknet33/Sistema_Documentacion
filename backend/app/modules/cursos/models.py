@@ -1,5 +1,5 @@
-# src/app/modules/cursos/models.py
 from sqlalchemy import Column, Integer, String, Boolean, UniqueConstraint
+from sqlalchemy.orm import relationship
 from app.core.database import Base
 
 class Curso(Base):
@@ -9,6 +9,10 @@ class Curso(Base):
     nombre = Column(String(255), nullable=False)
     nivel = Column(String(50), nullable=False)
     activo = Column(Boolean, default=True, nullable=False)
+
+    # Relaciones explícitas
+    estudiantes = relationship("Estudiante", back_populates="curso", cascade="all, delete-orphan")
+    documentos_requeridos = relationship("DocumentoRequerido", back_populates="curso", cascade="all, delete-orphan")
 
     __table_args__ = (
         UniqueConstraint('nombre', 'nivel', name='uq_nombre_nivel'),

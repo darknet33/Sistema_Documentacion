@@ -11,6 +11,7 @@ import Profile from '../pages/Profile';
 import NotFound from '../pages/NotFound';
 import Curse from '../pages/Curse';
 import Document from '../pages/Document';
+import Estudiantes from '../pages/Estudiantes';
 
 const AppRoutes = () => {
     const { isAuthenticated, user } = useAuth();
@@ -66,6 +67,15 @@ const AppRoutes = () => {
                 element={
                     <ProtectedRoute isAuthenticated={isAuthenticated}>
                         <Document />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/estudiantes"
+                element={
+                    <ProtectedRoute isAuthenticated={isAuthenticated}>
+                        <Estudiantes />
                     </ProtectedRoute>
                 }
             />

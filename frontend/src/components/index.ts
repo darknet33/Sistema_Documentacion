@@ -7,6 +7,8 @@ export { UserForm } from "./forms/UserForm";
 export { ProfileForm } from "./forms/ProfileForm";
 export { CurseForm } from "./forms/CurseForm";
 export { DocumentForm } from "./forms/DocumentForm";
+export { EstudianteForm } from "./forms/EstudianteForm";
+export { BusquedaEstudiante } from "./forms/BusquedaEstudiante";
 
 // Panels
 
@@ -16,6 +18,7 @@ export { DocumentosRequeridosPanel } from "./panel/DocumentosRequeridosPanel"
 export { UserTable } from "./tables/UserTable";
 export { CurseTable } from "./tables/CurseTable";
 export { DocumentTable } from "./tables/DocumentTable";
+export { EstudianteTable } from "./tables/EstudianteTable";
 
 // Cards
 

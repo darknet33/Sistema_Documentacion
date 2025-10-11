@@ -22,6 +22,19 @@ def list_cursos(skip: int = Query(0), limit: int = Query(100),
     return cursos[skip: skip + limit]
 
 
+
+# --- Listar cursos con estudiantes y documentos ---
+@router.get("/completo", response_model=List[schemas.CursoOut])
+def list_cursos_completo(db: Session = Depends(get_db),
+                         current_user: User = Depends(get_current_user)):
+    """
+    Devuelve todos los cursos con:
+    - estudiantes asociados
+    - documentos requeridos asociados
+    """
+    cursos = service.get_all_cursos_completo(db)
+    return cursos
+
 # --- Obtener un curso ---
 @router.get("/{curso_id}", response_model=schemas.CursoOut)
 def get_curso(curso_id: int = Path(..., gt=0),
