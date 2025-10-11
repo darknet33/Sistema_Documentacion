@@ -1,6 +1,6 @@
 // src/pages/Users.tsx
 import { useEffect, useState } from 'react';
-import { Sidebar, CurseTable, CurseForm, LoadingScreen, Notification } from '../components';
+import { Sidebar, CurseTable, CurseForm, LoadingScreen, Notification, DocumentosRequeridosPanel } from '../components';
 import { useCurse } from '../hooks/useCurse';
 import type { CurseOut, NewCurse, UpdateCurse } from '../types/curse';
 import { useAuth } from '../context/AuthContext';
@@ -11,15 +11,22 @@ const Curse = () => {
   const [showForm, setShowForm] = useState(false);
   const [editCurse, setEditCurse] = useState<CurseOut | null>(null);
   const [notification, setNotification] = useState<{ message: string; type?: 'success' | 'error' } | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<CurseOut | null>(null);
+  const [showDocuments,setShowDocuments] = useState(false)
 
   const handleCreate = () => {
     setEditCurse(null);
     setShowForm(true);
   };
 
-  const handleEdit = (user: CurseOut) => {
-    setEditCurse(user);
+  const handleEdit = (curso: CurseOut) => {
+    setEditCurse(curso);
     setShowForm(true);
+  };
+  
+  const handleViewDocuments = (curso: CurseOut) => {
+    setSelectedCourse(curso);
+    setShowDocuments(true);
   };
 
   const handleSubmit = async (data: NewCurse | UpdateCurse) => {
@@ -95,6 +102,7 @@ const Curse = () => {
                 onEdit={handleEdit}
                 onToggle={handleToggle}
                 onDelete={handleDelete}
+                onPanel={handleViewDocuments}
               />
             )}
           </>
@@ -109,6 +117,9 @@ const Curse = () => {
         )}
 
       </main>
+      {showDocuments && selectedCourse && (
+        <DocumentosRequeridosPanel curse={selectedCourse} onClose={()=>setShowDocuments(false)}/>
+      )}
     </div>
   );
 };

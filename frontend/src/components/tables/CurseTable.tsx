@@ -1,6 +1,6 @@
 import { type CurseTableProps } from '../../types/curse';
 
-export function CurseTable({ curser, onEdit, onToggle, onDelete }: CurseTableProps) {
+export function CurseTable({ curser, onEdit, onToggle, onDelete, onPanel }: CurseTableProps) {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full border border-gray-200 rounded-lg overflow-hidden shadow-sm">
@@ -56,6 +56,13 @@ export function CurseTable({ curser, onEdit, onToggle, onDelete }: CurseTablePro
                   className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
                 >
                   Eliminar
+                </button>
+
+                <button
+                 onClick={() => onPanel(curse)}
+                  className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm"
+                >
+                  Doc. Requeridos
                 </button>
               </td>
             </tr>

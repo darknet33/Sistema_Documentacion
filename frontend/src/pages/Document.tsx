@@ -80,7 +80,7 @@ const Document = () => {
     useEffect(() => {
         if (!token) logout();
 
-    }, [token])
+    })
 
 
     return (

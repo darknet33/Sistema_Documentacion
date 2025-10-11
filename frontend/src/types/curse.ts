@@ -18,9 +18,10 @@ export interface UpdateCurse{
 
 export interface CurseTableProps {
     curser: CurseOut[];
-    onEdit: (user: CurseOut) => void;
-    onToggle: (user: CurseOut) => void;
-    onDelete: (user: CurseOut) => void;
+    onEdit: (curse: CurseOut) => void;
+    onToggle: (curse: CurseOut) => void;
+    onDelete: (curse: CurseOut) => void;
+    onPanel: (curse: CurseOut) => void;
 }
 
 export interface CurseFormProps {

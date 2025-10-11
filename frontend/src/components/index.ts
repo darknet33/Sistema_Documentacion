@@ -8,6 +8,10 @@ export { ProfileForm } from "./forms/ProfileForm";
 export { CurseForm } from "./forms/CurseForm";
 export { DocumentForm } from "./forms/DocumentForm";
 
+// Panels
+
+export { DocumentosRequeridosPanel } from "./panel/DocumentosRequeridosPanel"
+
 // Tables
 export { UserTable } from "./tables/UserTable";
 export { CurseTable } from "./tables/CurseTable";
