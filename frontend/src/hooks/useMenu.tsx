@@ -25,6 +25,8 @@ export const useMenu = (userData: UserOut): MenuItem[] => {
     ],
     administrativo: [
       { label: 'Dashboard', icon: <LayoutDashboard className="h-5 w-5" />, path: '/dashboard', onClick: () => navigate('/dashboard') },
+      { label: 'Padres', icon: <Users className="h-5 w-5" />, path: '/padres', onClick: () => navigate('/padres') },
+      { label: 'Estudiantes', icon: <GraduationCap className="h-5 w-5" />, path: '/estudiantes', onClick: () => navigate('/estudiantes') },
       { label: 'Relaciones Pendientes', icon: <Link2 className="h-5 w-5" />, path: '/relaciones-pendientes', onClick: () => navigate('/relaciones-pendientes') },
     ],
     padre_familia: [

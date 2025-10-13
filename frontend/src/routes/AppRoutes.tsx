@@ -14,6 +14,7 @@ import Document from '../pages/Document';
 import Estudiantes from '../pages/Estudiantes';
 import VincularEstudiante from '../pages/VincularEstudiante';
 import RelacionesPendientes from '../pages/RelacionesPendientes';
+import Padres from '../pages/Padres';
 
 const AppRoutes = () => {
     const { isAuthenticated, user } = useAuth();
@@ -96,6 +97,15 @@ const AppRoutes = () => {
                 element={
                     <ProtectedRoute isAuthenticated={isAuthenticated}>
                         <RelacionesPendientes />
+                    </ProtectedRoute>
+                }
+            />
+            
+            <Route
+                path="/padres"
+                element={
+                    <ProtectedRoute isAuthenticated={isAuthenticated}>
+                        <Padres />
                     </ProtectedRoute>
                 }
             />

@@ -9,6 +9,7 @@ export { CurseForm } from "./forms/CurseForm";
 export { DocumentForm } from "./forms/DocumentForm";
 export { EstudianteForm } from "./forms/EstudianteForm";
 export { BusquedaEstudiante } from "./forms/BusquedaEstudiante";
+export { PadreForm } from "./forms/PadreForm";
 
 // Panels
 
