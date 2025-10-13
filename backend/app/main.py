@@ -8,6 +8,7 @@ from app.modules.cursos import router as cursos_router
 from app.modules.catalogo_documentos import router as documentos_router
 from app.modules.documentos_requeridos import router as documentos_requeridos_router
 from app.modules.estudiantes import router as estudiantes_router
+from app.modules.padres_estudiantes import router as padres_estudiantes_router
 
 # Crea la aplicación FastAPI
 app = FastAPI(
@@ -19,7 +20,8 @@ app = FastAPI(
 # Configuración de CORS
 origins = [
     "http://localhost:5173",  # Frontend en Vite
-    "http://127.0.0.1:5173"   # Alternativa (a veces el navegador usa 127.0.0.1 en lugar de localhost)
+    "http://127.0.0.1:5173",   # Alternativa (a veces el navegador usa 127.0.0.1 en lugar de localhost)
+    "http:// 192.168.0.10:5173",   # Alternativa (a veces el navegador usa 127.0.0.1 en lugar de localhost)
 ]
 
 app.add_middleware(
@@ -46,7 +48,7 @@ app.include_router(cursos_router.router, prefix="/api/v1")
 app.include_router(documentos_router.router, prefix="/api/v1")
 app.include_router(documentos_requeridos_router.router, prefix="/api/v1")
 app.include_router(estudiantes_router.router, prefix="/api/v1")
-
+app.include_router(padres_estudiantes_router.router, prefix="/api/v1")
 
 @app.get("/", tags=["Root"])
 def read_root():

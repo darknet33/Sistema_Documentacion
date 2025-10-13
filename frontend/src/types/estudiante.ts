@@ -1,4 +1,5 @@
 import type { CurseOut } from "./curse";
+import type { PadresEstudiantesCreate } from "./padresEstudiantes";
 
 export interface EstudianteOut {
   id: number;
@@ -40,4 +41,10 @@ export interface EstudianteTableProps {
   onEdit: (est: EstudianteOut) => void;
   onToggle: (est: EstudianteOut) => void;
   onDelete: (est: EstudianteOut) => void;
+}
+
+export interface VincularEstudianteTableProps {
+  estudiantes: EstudianteOut[];
+  onVincular: (data: PadresEstudiantesCreate) => void;
+  onDesvincular: (est: EstudianteOut) => void;
 }

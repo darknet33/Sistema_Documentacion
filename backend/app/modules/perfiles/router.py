@@ -1,5 +1,4 @@
 # src/app/modules/perfiles/router.py
-# src/app/modules/perfiles/router.py
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.core.database import get_db

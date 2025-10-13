@@ -41,11 +41,14 @@ CREATE TABLE estudiantes (
   FOREIGN KEY (curso_id) REFERENCES cursos(id)
 );
 
+-- Realizado
 CREATE TABLE padres_estudiantes (
   id INT PRIMARY KEY AUTO_INCREMENT,
   perfil_id INT,
   estudiante_id INT,
   parentesco VARCHAR(255),
+  estado BOOLEAN DEFAULT FALSE,
+  observacion VARCHAR(255) DEFAULT 'Solicitado',
   fecha_creacion TIMESTAMP,
   FOREIGN KEY (perfil_id) REFERENCES perfiles(id),
   FOREIGN KEY (estudiante_id) REFERENCES estudiantes(id)

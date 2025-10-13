@@ -2,7 +2,7 @@
 from pydantic import BaseModel, EmailStr, field_validator
 from typing import Optional
 from datetime import datetime
-from app.modules.perfiles.schemas import PerfilOut, PerfilCreate
+from app.modules.perfiles.schemas import PerfilOut, PerfilCreate, PerfilUpdate
 
 class UserBase(BaseModel):
     email: EmailStr
@@ -23,6 +23,7 @@ class UserUpdate(BaseModel):
     tipo_usuario: Optional[str] = None
     password: Optional[str] = None
     activo: Optional[bool] = None
+    perfil: Optional[PerfilUpdate] = None
 
 class UserOut(UserBase):
     id: int

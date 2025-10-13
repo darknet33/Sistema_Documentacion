@@ -12,6 +12,8 @@ import NotFound from '../pages/NotFound';
 import Curse from '../pages/Curse';
 import Document from '../pages/Document';
 import Estudiantes from '../pages/Estudiantes';
+import VincularEstudiante from '../pages/VincularEstudiante';
+import RelacionesPendientes from '../pages/RelacionesPendientes';
 
 const AppRoutes = () => {
     const { isAuthenticated, user } = useAuth();
@@ -76,6 +78,24 @@ const AppRoutes = () => {
                 element={
                     <ProtectedRoute isAuthenticated={isAuthenticated}>
                         <Estudiantes />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/vincular-estudiante"
+                element={
+                    <ProtectedRoute isAuthenticated={isAuthenticated}>
+                        <VincularEstudiante />
+                    </ProtectedRoute>
+                }
+            />
+            
+            <Route
+                path="/relaciones-pendientes"
+                element={
+                    <ProtectedRoute isAuthenticated={isAuthenticated}>
+                        <RelacionesPendientes />
                     </ProtectedRoute>
                 }
             />

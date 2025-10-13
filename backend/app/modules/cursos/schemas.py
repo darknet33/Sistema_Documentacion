@@ -20,7 +20,6 @@ class CursoCreate(CursoBase):
     """Schema para creación de cursos"""
     pass
 
-
 class CursoUpdate(BaseModel):
     """Schema para actualización parcial de cursos"""
     nombre: Optional[str] = None

@@ -19,6 +19,7 @@ export { UserTable } from "./tables/UserTable";
 export { CurseTable } from "./tables/CurseTable";
 export { DocumentTable } from "./tables/DocumentTable";
 export { EstudianteTable } from "./tables/EstudianteTable";
+export { VincularEstudianteTable } from "./tables/VincularEstudianteTable";
 
 // Cards
 
@@ -29,3 +30,6 @@ export { LoadingScreen } from "./ui/LoadingScreen";
 export { Sidebar } from "./ui/Sidebar";
 export { Notification } from "./ui/Notification"
 export { LogoutButton } from "./ui/LogoutButton"
+export { DashboardAdmin } from "./ui/DashboardAdmin"
+export { DashboardPadreFamilia } from "./ui/DashboardPadreFamilia"
+

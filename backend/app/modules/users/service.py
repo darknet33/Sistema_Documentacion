@@ -44,12 +44,25 @@ def create_user(db: Session, user: schemas.UserCreate, hashed_password: str) -> 
 
 # --- Actualizar usuario ---
 def update_user(db: Session, user_id: int, user_update: schemas.UserUpdate) -> Optional[models.User]:
+    # Buscar usuario
     db_user = db.query(models.User).filter(models.User.id == user_id).first()
     if not db_user:
         return None
 
+    # Actualizar campos del usuario (solo los enviados)
     for field, value in user_update.model_dump(exclude_unset=True).items():
-        setattr(db_user, field, value)
+        # Evitar asignar el perfil directamente (porque se maneja aparte)
+        if field != "perfil":
+            setattr(db_user, field, value)
+
+    # 👇 Si vino un perfil en el JSON, lo actualizamos también
+    if user_update.perfil:
+        db_perfil = db.query(Perfil).filter(Perfil.usuario_id == user_id).first()
+        if not db_perfil:
+            return None
+
+        for field, value in user_update.perfil.model_dump(exclude_unset=True).items():
+            setattr(db_perfil, field, value)
 
     db.commit()
     db.refresh(db_user)
