@@ -90,14 +90,14 @@ export function ProfileForm({ profile, onSubmit, onCancel }: ProfileFormProps) {
                     <button
                         type="button"
                         onClick={onCancel}
-                        className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium transition"
+                        className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium transition cursor-pointer"
                     >
                         Cancelar
                     </button>
                 )}
                 <button
                     type="submit"
-                    className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium transition"
+                    className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium transition cursor-pointer"
                 >
                     Guardar
                 </button>

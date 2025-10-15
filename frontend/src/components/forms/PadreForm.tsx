@@ -133,7 +133,7 @@ export function PadreForm({
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
+          className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 cursor-pointer transition"
         >
           {loading
             ? 'Guardando...'
