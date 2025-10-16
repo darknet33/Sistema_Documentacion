@@ -1,3 +1,102 @@
-venv
-test.db
+# ============================================
+# 🐍 Entornos virtuales
+# ============================================
+venv/
 .env
+.venv/
+env/
+ENV/
+
+# ============================================
+# 📦 Dependencias y cache de Python
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.so
+
+# ============================================
+# 🧰 Archivos de configuración y entorno
+# ============================================
+*.env
+.env.*
+*.ini
+*.toml
+*.cfg
+*.yaml
+*.yml
+
+# ============================================
+# 🗃️ Bases de datos locales o temporales
+# ============================================
+*.db
+*.sqlite
+*.sqlite3
+test.db
+
+# ============================================
+# 🧪 Archivos de test o pytest
+# ============================================
+.pytest_cache/
+.coverage
+htmlcov/
+.cache/
+nosetests.xml
+coverage.xml
+
+# ============================================
+# 🧱 Compilaciones, logs y temporales
+# ============================================
+*.log
+*.out
+*.err
+*.pid
+*.bak
+*.swp
+*.tmp
+*.old
+.DS_Store
+Thumbs.db
+
+# ============================================
+# 🚀 Frameworks y herramientas
+# ============================================
+# FastAPI / Uvicorn / Alembic
+alembic.ini
+alembic/
+migrations/
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ============================================
+# 🧪 Docker / containers
+# ============================================
+docker-compose.override.yml
+*.pid
+*.seed
+*.bak
+*.orig
+*.rej
+
+# ============================================
+# 📦 Archivos generados
+# ============================================
+dist/
+build/
+*.egg-info/
+*.egg
+.eggs/
+
+# ============================================
+# 📁 Datos temporales o de desarrollo
+# ============================================
+uploads/
+media/
+tmp/
+logs/
