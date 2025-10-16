@@ -32,5 +32,4 @@ class EstudianteOut(EstudianteBase):
     fecha_creacion: datetime
     curso: Optional[CursoOut] = None  # <-- Información completa del curso
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}

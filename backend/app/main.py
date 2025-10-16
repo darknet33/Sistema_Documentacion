@@ -14,7 +14,7 @@ app = FastAPI(
 origins = [
     "http://localhost:5173",  # Frontend en Vite
     "http://127.0.0.1:5173",   # Alternativa (a veces el navegador usa 127.0.0.1 en lugar de localhost)
-    "http:// 192.168.0.10:5173",   # Alternativa (a veces el navegador usa 127.0.0.1 en lugar de localhost)
+    "http://192.168.0.10:5173",   # Alternativa (a veces el navegador usa 127.0.0.1 en lugar de localhost)
 ]
 
 app.add_middleware(
