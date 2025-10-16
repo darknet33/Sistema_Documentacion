@@ -5,21 +5,14 @@ from . import models, schemas
 def get_padres_estudiantes(db: Session, skip: int = 0, limit: int = 100) -> list[models.Padres_Estudiantes]:
     return db.query(models.Padres_Estudiantes).offset(skip).limit(limit).all()
 
-def create_padres_estudiantes(db: Session, padres_estudiantes_in: schemas.Padres_EstudiantesCreate) -> models.Padres_Estudiantes:
+def create_relacion(db: Session, padres_estudiantes_in: schemas.Padres_EstudiantesCreate) -> models.Padres_Estudiantes:
     padres_estudiantes = models.Padres_Estudiantes(**padres_estudiantes_in.dict())
     db.add(padres_estudiantes)
     db.commit()
     db.refresh(padres_estudiantes)
     return padres_estudiantes
-
-def update_padres_estudiantes(db: Session, padres_estudiantes: models.Padres_Estudiantes, updates: schemas.Padres_EstudiantesUpdate) -> models.Padres_Estudiantes:
-    for field, value in updates.dict(exclude_unset=True).items():
-        setattr(padres_estudiantes, field, value)
-    db.commit()
-    db.refresh(padres_estudiantes)
-    return padres_estudiantes
     
-def delete_padres_estudiantes(db: Session, padres_estudiantes_id: int) -> models.Padres_Estudiantes:
+def delete_relacion(db: Session, padres_estudiantes_id: int) -> models.Padres_Estudiantes:
     padres_estudiantes = db.query(models.Padres_Estudiantes).filter(models.Padres_Estudiantes.id == padres_estudiantes_id).first()
     if not padres_estudiantes:
         return False

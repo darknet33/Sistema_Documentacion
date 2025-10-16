@@ -71,3 +71,19 @@ def get_current_user(
     email = payload.get("sub")
     user = user_service.authenticate_user(db, email=email)
     return schemas.UserOut.model_validate(user)
+
+def get_admin_user(
+    db: Session = Depends(get_db),
+    current_user: schemas.UserOut = Depends(get_current_user),
+) -> schemas.UserOut:
+    if not current_user.tipo_usuario in ['administrador', 'administrativo']:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="No tiene permisos de administrador")
+    return current_user
+
+def get_padre_familia_user(
+    db: Session = Depends(get_db),
+    current_user: schemas.UserOut = Depends(get_current_user),
+) -> schemas.UserOut:
+    if not current_user.tipo_usuario == 'padre_familia':
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="No tiene permisos de padre o tutor")
+    return current_user

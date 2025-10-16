@@ -2,6 +2,9 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from . import models, schemas
 
+def get_documento_requerido_by_id(db: Session, doc_id: int):
+    return db.query(models.DocumentoRequerido).filter(models.DocumentoRequerido.id == doc_id).first()
+
 def create_documento_requerido(db: Session, data: schemas.DocumentoRequeridoCreate):
     existente = db.query(models.DocumentoRequerido).filter_by(
         catalogo_documento_id=data.catalogo_documento_id,

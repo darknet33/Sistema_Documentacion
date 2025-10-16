@@ -19,3 +19,4 @@ class Estudiante(Base):
     # Relaciones
     curso = relationship("Curso", back_populates="estudiantes")
     padres_estudiantes = relationship("Padres_Estudiantes", back_populates="estudiante", cascade="all, delete-orphan")
+    documentos_estudiante = relationship("DocumentoEstudiante", back_populates="estudiante", cascade="all, delete-orphan")

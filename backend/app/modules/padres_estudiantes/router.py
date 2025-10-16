@@ -1,75 +1,54 @@
-# src/app/modules/padres_estudiantes/router.py
-from fastapi import APIRouter, Depends, HTTPException, status,Body
+from fastapi import APIRouter, Depends, HTTPException, status, Body
 from sqlalchemy.orm import Session
+
 from app.core.database import get_db
+from app.modules.auth.service import get_admin_user, get_padre_familia_user, get_current_user
+from app.modules.usuarios.models import User
 from . import schemas, service
-from app.modules.usuarios.models import  User 
-from app.modules.auth.service import get_current_user
 
 router = APIRouter(
     prefix="/padres_estudiantes",
-    tags=["Padres y Estudiantes"]
+    tags=["Padres y Estudiantes"],
+    dependencies=[Depends(get_current_user)]  # Todos los endpoints requieren autenticación
 )
 
+# --- Helper interno ---
+def get_relacion_or_404(db: Session, relacion_id: int):
+    relacion = service.get_padres_estudiantes_by_id(db, relacion_id)
+    if not relacion:
+        raise HTTPException(status_code=404, detail="Relación no encontrada")
+    return relacion
+
+# --- Listar relaciones (solo admin) ---
 @router.get("/", response_model=list[schemas.Padres_EstudiantesOut])
-def listar_padres_estudiantes(
-    skip: int = 0, limit: int = 100, db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
+def listar_padres_estudiantes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), current_user: User = Depends(get_admin_user)):
     return service.get_padres_estudiantes(db, skip, limit)
 
-@router.get("/{perfil_id}", response_model=list[schemas.Padres_EstudiantesOut])
-def listar_padres_estudiantes(
-    perfil_id: int, db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
+# --- Obtener relaciones por perfil (solo padre/familia) ---
+@router.get("/perfil/{perfil_id}", response_model=list[schemas.Padres_EstudiantesOut])
+def obtener_padre_estudiantes(perfil_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_padre_familia_user)):
     return service.get_padres_estudiantes_by_perfil(db, perfil_id)
 
+# --- Crear solicitud (solo padre/familia) ---
 @router.post("/", response_model=schemas.Padres_EstudiantesOut, status_code=status.HTTP_201_CREATED)
-def crear_padres_estudiantes(
-    padres_estudiantes_in: schemas.Padres_EstudiantesCreate, db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    return service.create_padres_estudiantes(db, padres_estudiantes_in)
+def solicitar_padre_estudiante(padres_estudiantes_in: schemas.Padres_EstudiantesCreate, db: Session = Depends(get_db), current_user: User = Depends(get_padre_familia_user)):
+    return service.create_relacion(db, padres_estudiantes_in)
 
-@router.put("/{padres_estudiantes_id}", response_model=schemas.Padres_EstudiantesOut)
-def actualizar_padres_estudiantes(
-    padres_estudiantes_id: int, updates: schemas.Padres_EstudiantesUpdate, db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    return service.update_padres_estudiantes(db, padres_estudiantes_id, updates)
-
-# --- Eliminar relación padre-estudiante ---
-@router.delete("/{padres_estudiantes_id}", status_code=status.HTTP_204_NO_CONTENT)
-def eliminar_padres_estudiantes(
-    padres_estudiantes_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    success = service.delete_padres_estudiantes(db, padres_estudiantes_id)
-    if not success:
-        raise HTTPException(status_code=404, detail="Relación no encontrada")
-    # No devolvemos nada; con status 204 basta
+# --- Eliminar relación (solo padre/familia) ---
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def cancelar_padre_estudiante(id: int, db: Session = Depends(get_db), current_user: User = Depends(get_padre_familia_user)):
+    get_relacion_or_404(db, id)
+    service.delete_relacion(db, id)
     return
 
-# --- Aceptar solicitud ---
+# --- Aceptar solicitud (solo admin) ---
 @router.patch("/{id}/aceptar", response_model=schemas.Padres_EstudiantesOut)
-def aceptar_padre_estudiante(id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    relacion = service.aceptar_relacion(db, id)
-    if not relacion:
-        raise HTTPException(status_code=404, detail="Relación no encontrada")
-    return relacion
+def aceptar_padre_estudiante(id: int, db: Session = Depends(get_db), current_user: User = Depends(get_admin_user)):
+    relacion = get_relacion_or_404(db, id)
+    return service.aceptar_relacion(db, id)
 
-# --- Rechazar solicitud ---
+# --- Rechazar solicitud (solo admin) ---
 @router.patch("/{id}/rechazar", response_model=schemas.Padres_EstudiantesOut)
-def rechazar_padre_estudiante(
-    id: int,
-    observacion: str = Body(None, embed=True),
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    relacion = service.rechazar_relacion(db, id, observacion)
-    if not relacion:
-        raise HTTPException(status_code=404, detail="Relación no encontrada")
-    return relacion
-
+def rechazar_padre_estudiante(id: int, observacion: str = Body(None, embed=True), db: Session = Depends(get_db), current_user: User = Depends(get_admin_user)):
+    get_relacion_or_404(db, id)
+    return service.rechazar_relacion(db, id, observacion)

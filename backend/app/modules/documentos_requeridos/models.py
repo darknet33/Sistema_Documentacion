@@ -14,4 +14,4 @@ class DocumentoRequerido(Base):
 
     # Relaciones ORM
     curso = relationship("Curso", back_populates="documentos_requeridos")
-    documento = relationship("CatalogoDocumento", backref="documentos_requeridos")
+    catalogo_documento = relationship("CatalogoDocumento", back_populates="documentos_requeridos")
