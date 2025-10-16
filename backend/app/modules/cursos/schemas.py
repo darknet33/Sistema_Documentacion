@@ -13,8 +13,7 @@ class CursoOut(CursoBase):
     estudiantes: Optional[List[EstudianteOut]] = []
     documentos_requeridos: Optional[List[DocumentoRequeridoOut]] = []
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 class CursoCreate(CursoBase):
     """Schema para creación de cursos"""

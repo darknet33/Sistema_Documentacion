@@ -20,8 +20,7 @@ class Padres_EstudiantesOut(Padres_EstudiantesBase):
     fecha_creacion: datetime
     fecha_actualizacion: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 class Padres_EstudiantesCreate(Padres_EstudiantesBase):

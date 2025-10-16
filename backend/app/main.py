@@ -1,14 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import Base, engine
-from app.modules.users import router as users_router
-from app.modules.auth import router as auth_router
-from app.modules.perfiles import router as perfiles_router
-from app.modules.cursos import router as cursos_router
-from app.modules.catalogo_documentos import router as documentos_router
-from app.modules.documentos_requeridos import router as documentos_requeridos_router
-from app.modules.estudiantes import router as estudiantes_router
-from app.modules.padres_estudiantes import router as padres_estudiantes_router
+from app.modules import router as modules_router
 
 # Crea la aplicación FastAPI
 app = FastAPI(
@@ -40,15 +33,8 @@ def on_startup():
     print("Base de datos lista.")
 
 
-# 1. Conexión de Routers Modulares
-app.include_router(users_router.router, prefix="/api/v1")
-app.include_router(auth_router.router, prefix="/api/v1")
-app.include_router(perfiles_router.router, prefix="/api/v1")
-app.include_router(cursos_router.router, prefix="/api/v1")
-app.include_router(documentos_router.router, prefix="/api/v1")
-app.include_router(documentos_requeridos_router.router, prefix="/api/v1")
-app.include_router(estudiantes_router.router, prefix="/api/v1")
-app.include_router(padres_estudiantes_router.router, prefix="/api/v1")
+# Incluir todos los routers automáticamente
+app.include_router(modules_router)
 
 @app.get("/", tags=["Root"])
 def read_root():

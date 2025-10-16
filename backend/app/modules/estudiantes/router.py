@@ -5,8 +5,8 @@ from typing import List
 
 from . import schemas, service
 from app.core.database import get_db
-from app.modules.users.models import User
-from app.utils.auth import get_current_user
+from app.modules.usuarios.models import User
+from app.modules.auth.service import get_current_user
 
 router = APIRouter(
     prefix="/estudiantes",

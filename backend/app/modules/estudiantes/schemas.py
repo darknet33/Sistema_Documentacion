@@ -7,8 +7,7 @@ class CursoOut(BaseModel):
     nombre: str
     nivel: str
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 class EstudianteBase(BaseModel):
     codigo_estudiante: str

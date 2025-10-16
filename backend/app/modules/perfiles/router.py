@@ -3,8 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from . import schemas, service
-from app.modules.users.models import  User 
-from app.utils.auth import get_current_user
+from app.modules.usuarios.models import  User 
+from app.modules.auth.service import get_current_user
 
 router = APIRouter(
     prefix="/perfiles",
@@ -15,14 +15,6 @@ router = APIRouter(
 def listar_perfiles(skip: int = 0, limit: int = 100, db: Session = Depends(get_db),
                     current_user: User = Depends(get_current_user)):
     return service.get_perfiles(db, skip, limit)
-
-@router.get("/", response_model=list[schemas.PerfilOut])
-def listar_perfiles(
-    skip: int = 0, limit: int = 100, db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)  
-):
-    return service.get_perfiles(db, skip, limit)
-
 
 @router.get("/{usuario_id}", response_model=schemas.PerfilOut)
 def obtener_perfil(

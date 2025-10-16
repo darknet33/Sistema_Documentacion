@@ -22,5 +22,4 @@ class DocumentoRequeridoOut(BaseModel):
     curso_id: int
     fecha_limite: Optional[date] = None
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
-from app.modules.users.schemas import UserOut
+from app.modules.usuarios.schemas import UserOut
 
 # --- Esquemas de Autenticación JWT ---
 

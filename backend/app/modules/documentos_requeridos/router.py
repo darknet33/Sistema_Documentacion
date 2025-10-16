@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.modules.documentos_requeridos import service, schemas
-from app.utils.auth import get_current_user
-from app.modules.users.models import User
+from app.modules.auth.service import get_current_user
+from app.modules.usuarios.models import User
 
 router = APIRouter(prefix="/documentos_requeridos", tags=["Documentos Requeridos"])
 

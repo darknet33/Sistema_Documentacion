@@ -3,9 +3,9 @@ from fastapi import APIRouter, Depends, HTTPException, status, Path, Query
 from sqlalchemy.orm import Session
 from typing import List
 
-from app.modules.users import schemas, models, service
+from app.modules.usuarios import schemas, models, service
 from app.core.database import get_db
-from app.utils.auth import hash_password, get_current_user
+from app.modules.auth.service import get_current_user
 
 router = APIRouter(
     prefix="/users",
@@ -33,8 +33,8 @@ def create_user(user_in: schemas.UserCreate, db: Session = Depends(get_db)):
     """Crea un nuevo usuario."""
     if service.get_user_by_email(db, email=user_in.email):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El email ya está registrado.")
-    hashed_password = hash_password(user_in.password)
-    new_user = service.create_user(db, user=user_in, hashed_password=hashed_password)
+    
+    new_user = service.create_user(db, user=user_in)
     return new_user
 
 # --- Actualizar usuario ---
