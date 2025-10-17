@@ -21,7 +21,7 @@ def get_relacion_or_404(db: Session, relacion_id: int):
 
 # --- Listar relaciones (solo admin) ---
 @router.get("/", response_model=list[schemas.Padres_EstudiantesOut])
-def listar_padres_estudiantes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), current_user: User = Depends(get_admin_user)):
+def listar_padres_estudiantes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return service.get_padres_estudiantes(db, skip, limit)
 
 # --- Obtener relaciones por perfil (solo padre/familia) ---

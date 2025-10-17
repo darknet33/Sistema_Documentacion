@@ -1,12 +1,11 @@
 import { VincularEstudianteTable } from "../components";
 import type { EstudianteOut } from "../types/estudiante";
-import { useAuth } from "../context/AuthContext";
 import { useEstudiantes } from "../hooks/useEstudiantes";
 import { usePadreEstudiante } from "../hooks/usePadeEstudiante";
 import { PageLayout } from "../layout/PageLayout";
+import type { PadresEstudiantesCreate } from "../types/padresEstudiantes";
 
 export default function VincularEstudiante() {
-  const { user } = useAuth();
 
   // 🔹 Cargar estudiantes
   const { estudiantes, loading: loadingEst } = useEstudiantes();
@@ -17,10 +16,10 @@ export default function VincularEstudiante() {
     addRelacion,
     deleteRelacion,
     reload: reloadRelaciones,
-  } = usePadreEstudiante(user?.perfil?.id);
+  } = usePadreEstudiante();
 
   // 🔹 Vincular estudiante con perfil (ya viene completo desde el formulario)
-  const handleVincular = async (data: any) => {
+  const handleVincular = async (data: PadresEstudiantesCreate) => {
     try {
       await addRelacion(data);
       reloadRelaciones();
@@ -42,10 +41,13 @@ export default function VincularEstudiante() {
     }
   };
 
-  // 🔹 Mostrar solo estudiantes que no están vinculados
-  const estudiantesDisponibles = estudiantes.filter(
-    (est) => !relaciones.some((rel) => rel.estudiante.id === est.id)
-  );
+
+  // 🔹 Crear un Set con todos los IDs de estudiantes que ya tienen alguna relación
+  const estudiantesConRelacion = new Set(relaciones.map(r => r.estudiante.id));
+
+  // 🔹 Filtrar los estudiantes que NO están en ese Set → estudiantes libres
+  const estudiantesDisponibles = estudiantes.filter(est => !estudiantesConRelacion.has(est.id));
+
 
   return (
     <PageLayout title="Solicitud Padres con Estudiantes">
