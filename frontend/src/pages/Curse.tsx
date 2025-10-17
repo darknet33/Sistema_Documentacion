@@ -1,8 +1,9 @@
 // src/pages/Users.tsx
 import { useState } from 'react';
-import { Sidebar, CurseTable, CurseForm, LoadingScreen, Notification, DocumentosRequeridosPanel } from '../components';
+import { CurseTable, CurseForm, LoadingScreen, Notification, DocumentosRequeridosPanel } from '../components';
 import { useCurse } from '../hooks/useCurse';
 import type { CurseOut, NewCurse, UpdateCurse } from '../types/curse';
+import { PageLayout } from '../layout/PageLayout';
 
 const Curse = () => {
   const { curser, loading, error, addCurse, updateCurse, toggleStatus, deleteCurse } = useCurse();
@@ -10,7 +11,7 @@ const Curse = () => {
   const [editCurse, setEditCurse] = useState<CurseOut | null>(null);
   const [notification, setNotification] = useState<{ message: string; type?: 'success' | 'error' } | null>(null);
   const [selectedCourse, setSelectedCourse] = useState<CurseOut | null>(null);
-  const [showDocuments,setShowDocuments] = useState(false)
+  const [showDocuments, setShowDocuments] = useState(false)
 
   const handleCreate = () => {
     setEditCurse(null);
@@ -21,7 +22,7 @@ const Curse = () => {
     setEditCurse(curso);
     setShowForm(true);
   };
-  
+
   const handleViewDocuments = (curso: CurseOut) => {
     setSelectedCourse(curso);
     setShowDocuments(true);
@@ -62,58 +63,52 @@ const Curse = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
-      <Sidebar />
+    <PageLayout title='Panel de Curso'>
+      {showForm ? (
+        <CurseForm
+          curse={editCurse || undefined}
+          loading={false}
+          error={null}
+          onCancel={() => setShowForm(false)}
+          onSubmit={handleSubmit}
+        />
+      ) : (
+        <>
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={handleCreate}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+            >
+              Crear Curso
+            </button>
+          </div>
 
-      <main className="flex-1 p-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Panel de Cursos</h1>
-
-        {showForm ? (
-          <CurseForm
-            curse={editCurse || undefined}
-            loading={false}
-            error={null}
-            onCancel={() => setShowForm(false)}
-            onSubmit={handleSubmit}
-          />
-        ) : (
-          <>
-            <div className="flex justify-end mb-4">
-              <button
-                onClick={handleCreate}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-              >
-                Crear Curso
-              </button>
-            </div>
-
-            {loading && <LoadingScreen />}
-            {error && <p className="text-red-600">{error}</p>}
-            {!loading && (
-              <CurseTable
-                curser={curser}
-                onEdit={handleEdit}
-                onToggle={handleToggle}
-                onDelete={handleDelete}
-                onPanel={handleViewDocuments}
-              />
-            )}
-          </>
-        )}
-
-        {notification && (
-          <Notification
-            message={notification.message}
-            type={notification.type}
-            onClose={() => setNotification(null)}
-          />
-        )}
-
-      </main>
-      {showDocuments && selectedCourse && (
-        <DocumentosRequeridosPanel curse={selectedCourse} onClose={()=>setShowDocuments(false)}/>
+          {loading && <LoadingScreen />}
+          {error && <p className="text-red-600">{error}</p>}
+          {!loading && (
+            <CurseTable
+              curser={curser}
+              onEdit={handleEdit}
+              onToggle={handleToggle}
+              onDelete={handleDelete}
+              onPanel={handleViewDocuments}
+            />
+          )}
+        </>
       )}
-    </div>
+
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={() => setNotification(null)}
+        />
+      )}
+
+      {showDocuments && selectedCourse && (
+        <DocumentosRequeridosPanel curse={selectedCourse} onClose={() => setShowDocuments(false)} />
+      )}
+    </PageLayout>
   );
 };
 

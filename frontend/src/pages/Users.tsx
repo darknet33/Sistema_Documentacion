@@ -1,8 +1,9 @@
 // src/pages/Users.tsx
 import { useState } from 'react';
-import { Sidebar, UserTable, UserForm, LoadingScreen, Notification } from '../components';
+import { UserTable, UserForm, LoadingScreen, Notification } from '../components';
 import { useUsers } from '../hooks/useUsers';
 import { type UserOut, type NewUser, type UpdateUser } from '../types/users';
+import { PageLayout } from '../layout/PageLayout';
 
 const Users = () => {
   const { users, loading, error, addUser, updateUser, toggleStatus, deleteUser } = useUsers();
@@ -55,52 +56,46 @@ const Users = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
-      <Sidebar />
+    <PageLayout title='Panel de Usuarios'>
+      {showForm ? (
+        <UserForm
+          user={editUser || undefined}
+          loading={false}
+          error={null}
+          onCancel={() => setShowForm(false)}
+          onSubmit={handleSubmit}
+        />
+      ) : (
+        <>
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={handleCreate}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+            >
+              Crear Usuario
+            </button>
+          </div>
 
-      <main className="flex-1 p-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Panel de Usuarios</h1>
-
-        {showForm ? (
-          <UserForm
-            user={editUser || undefined}
-            loading={false}
-            error={null}
-            onCancel={() => setShowForm(false)}
-            onSubmit={handleSubmit}
-          />
-        ) : (
-          <>
-            <div className="flex justify-end mb-4">
-              <button
-                onClick={handleCreate}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-              >
-                Crear Usuario
-              </button>
-            </div>
-
-            {loading && <LoadingScreen />}
-            {error && <p className="text-red-600">{error}</p>}
-            {!loading && (
-              <UserTable
-                users={users}
-                onEdit={handleEdit}
-                onToggle={handleToggle}
-                onDelete={handleDelete}
-              />
-            )}
-          </>
-        )}
-        {notification && (
-          <Notification
-            message={notification.message}
-            type={notification.type}
-            onClose={() => setNotification(null)}
-          />
-        )}
-      </main>
-    </div>
+          {loading && <LoadingScreen />}
+          {error && <p className="text-red-600">{error}</p>}
+          {!loading && (
+            <UserTable
+              users={users}
+              onEdit={handleEdit}
+              onToggle={handleToggle}
+              onDelete={handleDelete}
+            />
+          )}
+        </>
+      )}
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={() => setNotification(null)}
+        />
+      )}
+    </PageLayout>
   );
 };
 

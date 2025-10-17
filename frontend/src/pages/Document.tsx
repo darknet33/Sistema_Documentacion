@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Sidebar, DocumentTable, DocumentForm, LoadingScreen, Notification } from '../components';
+import { DocumentTable, DocumentForm, LoadingScreen, Notification } from '../components';
 import { useDocument } from '../hooks/useDocuments';
 import type { DocumentOut, NewDocument, UpdateDocument } from '../types/document';
+import { PageLayout } from '../layout/PageLayout';
 
 const Document = () => {
     const { documents, loading, error, addDocument, updateDocument, toggleStatus, toggleObligatorio, deleteDocument } = useDocument();
@@ -76,13 +77,8 @@ const Document = () => {
     };
 
     return (
-        <div className="min-h-screen flex bg-gray-50">
-            <Sidebar />
-
-            <main className="flex-1 p-6">
-                <h1 className="text-3xl font-bold text-gray-900 mb-6">Catálogo de Documentos</h1>
-
-                {showForm ? (
+        <PageLayout title='Catálogo de Documentos'>
+            {showForm ? (
                     <DocumentForm
                         document={editDocument || undefined}
                         loading={false}
@@ -122,8 +118,7 @@ const Document = () => {
                         onClose={() => setNotification(null)}
                     />
                 )}
-            </main>
-        </div>
+        </PageLayout>
     );
 };
 

@@ -15,7 +15,7 @@ export const fetchPadresEstudiantesApi = async (): Promise<PadresEstudiantesOut[
 export const fetchPadresEstudiantesByPerfilApi = async (
   perfilId: number
 ): Promise<PadresEstudiantesOut[]> => {
-  const data = await authFetch(`/padres_estudiantes/${perfilId}`);
+  const data = await authFetch(`/padres_estudiantes/perfil/${perfilId}`);
   return data;
 };
 

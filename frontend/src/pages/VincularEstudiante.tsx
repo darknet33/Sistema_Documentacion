@@ -1,8 +1,9 @@
-import { Sidebar, VincularEstudianteTable } from "../components";
+import { VincularEstudianteTable } from "../components";
 import type { EstudianteOut } from "../types/estudiante";
 import { useAuth } from "../context/AuthContext";
 import { useEstudiantes } from "../hooks/useEstudiantes";
 import { usePadreEstudiante } from "../hooks/usePadeEstudiante";
+import { PageLayout } from "../layout/PageLayout";
 
 export default function VincularEstudiante() {
   const { user } = useAuth();
@@ -47,23 +48,16 @@ export default function VincularEstudiante() {
   );
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
-      <Sidebar />
-      <main className="flex-1 p-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">
-          Panel de Vincular Estudiante
-        </h1>
-
-        {loadingEst ? (
-          <p className="text-gray-600">Cargando estudiantes...</p>
-        ) : (
-          <VincularEstudianteTable
-            onVincular={handleVincular}
-            onDesvincular={handleDesvincular}
-            estudiantes={estudiantesDisponibles}
-          />
-        )}
-      </main>
-    </div>
+    <PageLayout title="Solicitud Padres con Estudiantes">
+      {loadingEst ? (
+        <p className="text-gray-600">Cargando estudiantes...</p>
+      ) : (
+        <VincularEstudianteTable
+          onVincular={handleVincular}
+          onDesvincular={handleDesvincular}
+          estudiantes={estudiantesDisponibles}
+        />
+      )}
+    </PageLayout>
   );
 }

@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Sidebar, EstudianteForm, EstudianteTable, LoadingScreen, Notification } from "../components";
+import { EstudianteForm, EstudianteTable, LoadingScreen, Notification } from "../components";
 import { useEstudiantes } from "../hooks/useEstudiantes";
 import type { EstudianteOut, NewEstudiante, UpdateEstudiante } from "../types/estudiante";
+import { PageLayout } from "../layout/PageLayout";
 
 export default function Estudiantes() {
   const { estudiantes, loading, error, addEstudiante, updateEstudiante, toggleStatus, deleteEstudiante } = useEstudiantes();
@@ -42,27 +43,23 @@ export default function Estudiantes() {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
-      <Sidebar />
-      <main className="flex-1 p-6">
-        <h1 className="text-3xl font-bold mb-6">Panel de Estudiantes</h1>
+    <PageLayout title="Panel de Estudiantes">
+      {showForm ? (
+        <EstudianteForm estudiante={editEstudiante || undefined} onSubmit={handleSubmit} onCancel={() => setShowForm(false)} />
+      ) : (
+        <>
+          <div className="flex justify-end mb-4">
+            <button onClick={handleCreate} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Crear Estudiante</button>
+          </div>
 
-        {showForm ? (
-          <EstudianteForm estudiante={editEstudiante || undefined} onSubmit={handleSubmit} onCancel={() => setShowForm(false)} />
-        ) : (
-          <>
-            <div className="flex justify-between mb-4">
-              <button onClick={handleCreate} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Crear Estudiante</button>
-            </div>
+          {loading && <LoadingScreen />}
+          {error && <p className="text-red-600">{error}</p>}
+          {!loading && <EstudianteTable estudiantes={estudiantes} onEdit={handleEdit} onToggle={handleToggleActivo} onDelete={handleDelete} />}
+        </>
+      )}
 
-            {loading && <LoadingScreen />}
-            {error && <p className="text-red-600">{error}</p>}
-            {!loading && <EstudianteTable estudiantes={estudiantes} onEdit={handleEdit} onToggle={handleToggleActivo} onDelete={handleDelete} />}
-          </>
-        )}
+      {notification && <Notification message={notification.message} type={notification.type} onClose={() => setNotification(null)} />}
 
-        {notification && <Notification message={notification.message} type={notification.type} onClose={() => setNotification(null)} />}
-      </main>
-    </div>
+    </PageLayout>
   );
 }

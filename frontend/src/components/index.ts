@@ -1,5 +1,9 @@
 // src/components/index.ts
 
+//Modal
+
+export { Modal } from "./modal/Modal"
+
 
 // Forms
 export { LoginForm } from "./forms/LoginForm";
@@ -21,6 +25,7 @@ export { CurseTable } from "./tables/CurseTable";
 export { DocumentTable } from "./tables/DocumentTable";
 export { EstudianteTable } from "./tables/EstudianteTable";
 export { VincularEstudianteTable } from "./tables/VincularEstudianteTable";
+export { PadresEstudiantesTable } from "./tables/PadresEstudiantesTable";
 
 // Cards
 
@@ -33,4 +38,5 @@ export { Notification } from "./ui/Notification"
 export { LogoutButton } from "./ui/LogoutButton"
 export { DashboardAdmin } from "./ui/DashboardAdmin"
 export { DashboardPadreFamilia } from "./ui/DashboardPadreFamilia"
+export { ThemeToggle } from "./ui/ThemeToggle"
 

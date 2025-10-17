@@ -53,3 +53,13 @@ export interface VincularPadreEstudianteProps {
   onVincular: (data: PadresEstudiantesCreate) => void;
   onDesvincular: (rel: PadresEstudiantesOut) => void;
 }
+
+export interface PadresEstudiantesTablePendingProps {
+  pendientes: PadresEstudiantesOut[];
+  selectedId: number | null;
+  observacion: string;
+  setSelectedId: (id: number | null) => void;
+  setObservacion: (value: string) => void;
+  handleAceptar: (id: number) => void;
+  handleRechazar: (id: number) => void;
+}

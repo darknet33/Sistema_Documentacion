@@ -4,6 +4,7 @@ from app.core.database import get_db
 from app.modules.auth.service import get_current_user
 from app.modules.usuarios.models import User
 from . import service, schemas
+from fastapi import UploadFile, File, Form
 
 router = APIRouter(
     prefix="/documentos_estudiante",
@@ -24,11 +25,40 @@ def get_doc_or_404(db: Session, doc_id: int):
 def get_by_estudiante(estudiante_id: int, db: Session = Depends(get_db)):
     return service.get_by_estudiante(db, estudiante_id)
 
-
 # --- Crear documento ---
-@router.post("/", response_model=schemas.DocumentoEstudianteOut, status_code=status.HTTP_201_CREATED)
-def create_documento(req: schemas.DocumentoEstudianteCreate, db: Session = Depends(get_db)):
-    return service.create_documento_estudiante(db, req)
+@router.post("/", response_model=schemas.DocumentoEstudianteOut, status_code=201)
+async def create_documento(
+    estudiante_id: int = Form(...),
+    catalogo_documento_id: int = Form(...),
+    archivo: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
+    import os, shutil
+    from datetime import datetime
+
+    # Carpeta para guardar archivos
+    UPLOAD_DIR = "uploads/documentos_estudiante"
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+    # Nombre único para evitar colisiones
+    timestamp = int(datetime.utcnow().timestamp() * 1000)
+    filename = f"{estudiante_id}_{catalogo_documento_id}_{timestamp}_{archivo.filename}"
+    file_path = os.path.join(UPLOAD_DIR, filename)
+
+    with open(file_path, "wb") as f:
+        shutil.copyfileobj(archivo.file, f)
+
+    # Guardar en DB
+    url_documento = f"/static/documentos/{filename}"  # Luego servir la carpeta como estática
+    nuevo_doc = schemas.DocumentoEstudianteCreate(
+        estudiante_id=estudiante_id,
+        catalogo_documento_id=catalogo_documento_id,
+        entregado=True,
+        fecha_entrega=datetime.utcnow().date(),
+        archivo_digital=url_documento
+    )
+
+    return service.create_documento_estudiante(db, nuevo_doc)
 
 
 # --- Actualizar documento ---

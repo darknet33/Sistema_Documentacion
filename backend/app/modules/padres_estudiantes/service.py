@@ -5,6 +5,9 @@ from . import models, schemas
 def get_padres_estudiantes(db: Session, skip: int = 0, limit: int = 100) -> list[models.Padres_Estudiantes]:
     return db.query(models.Padres_Estudiantes).offset(skip).limit(limit).all()
 
+def get_padres_estudiantes_by_id(db:Session, id: int) -> models.Padres_Estudiantes:
+    return db.query(models.Padres_Estudiantes).filter(models.Padres_Estudiantes.id == id).first()
+
 def create_relacion(db: Session, padres_estudiantes_in: schemas.Padres_EstudiantesCreate) -> models.Padres_Estudiantes:
     padres_estudiantes = models.Padres_Estudiantes(**padres_estudiantes_in.dict())
     db.add(padres_estudiantes)

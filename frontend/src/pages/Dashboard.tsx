@@ -1,20 +1,19 @@
-import { DashboardAdmin, DashboardPadreFamilia, LoadingScreen, Sidebar } from '../components';
+import { DashboardAdmin, DashboardPadreFamilia, LoadingScreen } from '../components';
 import { useAuth } from '../context/AuthContext';
+import { PageLayout } from '../layout/PageLayout';
 
 const Dashboard = () => {
-  
+
   const { user } = useAuth();
 
   if (!user) return <LoadingScreen />;
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
-      <Sidebar />
+    <PageLayout>
       {user.tipo_usuario === 'administrador' && <DashboardAdmin />}
       {user.tipo_usuario === 'administrativo' && <DashboardAdmin />}
       {user.tipo_usuario === 'padre_familia' && <DashboardPadreFamilia />}
-      
-    </div>
+    </PageLayout>
   );
 };
 

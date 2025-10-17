@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import Base, engine
 from app.modules import router as modules_router
+from fastapi.staticfiles import StaticFiles
 
 # Crea la aplicación FastAPI
 app = FastAPI(
@@ -14,7 +15,8 @@ app = FastAPI(
 origins = [
     "http://localhost:5173",  # Frontend en Vite
     "http://127.0.0.1:5173",   # Alternativa (a veces el navegador usa 127.0.0.1 en lugar de localhost)
-    "http://192.168.0.10:5173",   # Alternativa (a veces el navegador usa 127.0.0.1 en lugar de localhost)
+    "http://192.168.0.10:5173",
+    "http://192.168.1.9:5173"   # Alternativa (a veces el navegador usa 127.0.0.1 en lugar de localhost)
 ]
 
 app.add_middleware(
@@ -24,6 +26,9 @@ app.add_middleware(
     allow_methods=["*"],            # Métodos permitidos (GET, POST, PUT, DELETE...)
     allow_headers=["*"],            # Headers permitidos
 )
+
+app.mount("/static", StaticFiles(directory="uploads"), name="static")
+
 
 # Al iniciar la aplicación, crea las tablas si no existen en 'test.db'
 @app.on_event("startup")

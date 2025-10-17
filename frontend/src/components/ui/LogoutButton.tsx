@@ -6,10 +6,13 @@ export function LogoutButton() {
     return (
         <button
             onClick={logout}
-            className="flex items-center space-x-2 px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition duration-150 shadow-md w-full justify-center"
+            className="
+        flex items-center gap-1 text-sm text-gray-500 
+        hover:text-red-500 transition-colors duration-150
+      "
         >
-            <LogOut className="h-5 w-5" />
-            <span>Cerrar Sesión</span>
+            <LogOut className="h-4 w-4" />
+            <span>Cerrar sesión</span>
         </button>
     )
 }

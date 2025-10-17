@@ -1,8 +1,16 @@
 // src/hooks/useMenu.ts
-import { type UserOut } from '../types/users';
-import { LayoutDashboard, Users, School, GraduationCap,File,Link2 } from 'lucide-react';
-import type { JSX } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { type UserOut } from "../types/users";
+import {
+  LayoutDashboard,
+  Users,
+  School,
+  GraduationCap,
+  File,
+  Link2,
+} from "lucide-react";
+import type { JSX } from "react";
+import { useNavigate } from "react-router-dom";
+import { usePadreEstudiante } from "./usePadeEstudiante";
 
 export interface MenuItem {
   label: string;
@@ -13,27 +21,49 @@ export interface MenuItem {
 
 export const useMenu = (userData: UserOut): MenuItem[] => {
   const navigate = useNavigate();
+  const { aceptarRelacion } = usePadreEstudiante();
+
+  // 🧠 Helper para crear ítems de menú
+  const createItem = (label: string, icon: JSX.Element, path: string): MenuItem => ({
+    label,
+    icon,
+    path,
+    onClick: () => navigate(path),
+  });
 
   const menuByRole: Record<string, MenuItem[]> = {
     administrador: [
-      { label: 'Dashboard', icon: <LayoutDashboard className="h-5 w-5" />, path: '/dashboard', onClick: () => navigate('/dashboard') },
-      { label: 'Usuarios', icon: <Users className="h-5 w-5" />, path: '/usuarios', onClick: () => navigate('/usuarios') },
-      { label: 'Cursos', icon: <School className="h-5 w-5" />, path: '/cursos', onClick: () => navigate('/cursos') },
-      { label: 'Documentos', icon: <File className="h-5 w-5" />, path: '/documentos', onClick: () => navigate('/documentos') },
-      { label: 'Estudiantes', icon: <GraduationCap className="h-5 w-5" />, path: '/estudiantes', onClick: () => navigate('/estudiantes') },
-      { label: 'Relaciones Pendientes', icon: <Link2 className="h-5 w-5" />, path: '/relaciones-pendientes', onClick: () => navigate('/relaciones-pendientes') },
+      createItem("Dashboard", <LayoutDashboard className="h-5 w-5" />, "/dashboard"),
+      createItem("Usuarios", <Users className="h-5 w-5" />, "/usuarios"),
+      createItem("Cursos", <School className="h-5 w-5" />, "/cursos"),
+      createItem("Documentos", <File className="h-5 w-5" />, "/documentos"),
+      createItem("Estudiantes", <GraduationCap className="h-5 w-5" />, "/estudiantes"),
+      {
+        label: `Padres - Estudiantes (${aceptarRelacion?.length ?? 0})`,
+        icon: <Link2 className="h-5 w-5" />,
+        path: "/relaciones-pendientes",
+        onClick: () => navigate("/relaciones-pendientes"),
+      },
     ],
+
     administrativo: [
-      { label: 'Dashboard', icon: <LayoutDashboard className="h-5 w-5" />, path: '/dashboard', onClick: () => navigate('/dashboard') },
-      { label: 'Padres', icon: <Users className="h-5 w-5" />, path: '/padres', onClick: () => navigate('/padres') },
-      { label: 'Estudiantes', icon: <GraduationCap className="h-5 w-5" />, path: '/estudiantes', onClick: () => navigate('/estudiantes') },
-      { label: 'Relaciones Pendientes', icon: <Link2 className="h-5 w-5" />, path: '/relaciones-pendientes', onClick: () => navigate('/relaciones-pendientes') },
+      createItem("Dashboard", <LayoutDashboard className="h-5 w-5" />, "/dashboard"),
+      createItem("Padres", <Users className="h-5 w-5" />, "/padres"),
+      createItem("Estudiantes", <GraduationCap className="h-5 w-5" />, "/estudiantes"),
+      {
+        label: `Padres - Estudiantes (${aceptarRelacion?.length ?? 0})`,
+        icon: <Link2 className="h-5 w-5" />,
+        path: "/relaciones-pendientes",
+        onClick: () => navigate("/relaciones-pendientes"),
+      },
     ],
+
     padre_familia: [
-      { label: 'Dashboard', icon: <LayoutDashboard className="h-5 w-5" />, path: '/dashboard', onClick: () => navigate('/dashboard') },
-      { label: 'Vincular Estudiante', icon: <Link2 className="h-5 w-5" />, path: '/vincular-estudiante', onClick: () => navigate('/vincular-estudiante') },
+      createItem("Dashboard", <LayoutDashboard className="h-5 w-5" />, "/dashboard"),
+      createItem("Vincular Estudiante", <Link2 className="h-5 w-5" />, "/vincular-estudiante"),
     ],
   };
 
-  return menuByRole[userData.tipo_usuario] || [];
+  // 🔒 fallback si el rol no existe
+  return menuByRole[userData.tipo_usuario] ?? [];
 };

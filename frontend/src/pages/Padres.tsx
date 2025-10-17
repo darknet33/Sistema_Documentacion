@@ -1,8 +1,9 @@
 // src/pages/Padres.tsx
 import { useState } from "react";
-import { Sidebar, UserTable, LoadingScreen, Notification, PadreForm } from "../components";
+import { UserTable, LoadingScreen, Notification, PadreForm } from "../components";
 import { useUsers } from "../hooks/useUsers";
 import { type UserOut, type NewUser, type UpdateUser } from "../types/users";
+import { PageLayout } from "../layout/PageLayout";
 
 const Padres = () => {
     const { users, loading, error, addUser, updateUser, toggleStatus, deleteUser } = useUsers();
@@ -68,55 +69,47 @@ const Padres = () => {
     };
 
     return (
-        <div className="min-h-screen flex bg-gray-50">
-            <Sidebar />
+        <PageLayout title="Panel de Padres de Familia">
+            {showForm ? (
+                <PadreForm
+                    user={editUser || undefined}
+                    loading={false}
+                    error={null}
+                    onCancel={() => setShowForm(false)}
+                    onSubmit={handleSubmit}
+                />
+            ) : (
+                <>
+                    <div className="flex justify-end mb-4">
+                        <button
+                            onClick={handleCreate}
+                            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                        >
+                            Crear Padre
+                        </button>
+                    </div>
 
-            <main className="flex-1 p-6">
-                <h1 className="text-3xl font-bold text-gray-900 mb-6">
-                    Panel de Padres de Familia
-                </h1>
+                    {loading && <LoadingScreen />}
+                    {error && <p className="text-red-600">{error}</p>}
+                    {!loading && (
+                        <UserTable
+                            users={padres}
+                            onEdit={handleEdit}
+                            onToggle={handleToggle}
+                            onDelete={handleDelete}
+                        />
+                    )}
+                </>
+            )}
 
-                {showForm ? (
-                    <PadreForm
-                        user={editUser || undefined}
-                        loading={false}
-                        error={null}
-                        onCancel={() => setShowForm(false)}
-                        onSubmit={handleSubmit}
-                    />
-                ) : (
-                    <>
-                        <div className="flex justify-end mb-4">
-                            <button
-                                onClick={handleCreate}
-                                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-                            >
-                                Crear Padre
-                            </button>
-                        </div>
-
-                        {loading && <LoadingScreen />}
-                        {error && <p className="text-red-600">{error}</p>}
-                        {!loading && (
-                            <UserTable
-                                users={padres}
-                                onEdit={handleEdit}
-                                onToggle={handleToggle}
-                                onDelete={handleDelete}
-                            />
-                        )}
-                    </>
-                )}
-
-                {notification && (
-                    <Notification
-                        message={notification.message}
-                        type={notification.type}
-                        onClose={() => setNotification(null)}
-                    />
-                )}
-            </main>
-        </div>
+            {notification && (
+                <Notification
+                    message={notification.message}
+                    type={notification.type}
+                    onClose={() => setNotification(null)}
+                />
+            )}
+        </PageLayout>
     );
 };
 

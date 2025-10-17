@@ -16,7 +16,7 @@ export function EstudianteForm({ estudiante, loading = false, error, onSubmit, o
   useEffect(() => {
     if (estudiante) {
       setCodigo(estudiante.codigo_estudiante);
-      setNombres(estudiante.curso ? estudiante.curso.nombre : estudiante.nombres);
+      setNombres(estudiante.nombres);
       setApellidos(estudiante.apellidos);
       setFechaNacimiento(estudiante.fecha_nacimiento);
       setCursoId(estudiante.curso_id);

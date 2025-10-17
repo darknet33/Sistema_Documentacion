@@ -19,7 +19,7 @@ for _, module_name, is_pkg in pkgutil.iter_modules(__path__):
         if hasattr(mod, "router"):
             router.include_router(
                 mod.router,
-                prefix=f"/api/v1/{module_name}"
+                prefix=f"/api/v1"
             )
             print(f"✅ Router cargado: {module_name}")
         else:

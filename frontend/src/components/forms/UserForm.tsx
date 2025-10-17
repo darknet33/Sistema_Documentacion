@@ -125,7 +125,7 @@ export function UserForm({
           onChange={e => setTipo(e.target.value as 'administrador' | 'administrativo' | 'padre_familia')}
           className="w-full px-3 py-2 border rounded-lg"
         >
-          <option value="administrador">Administrador</option>
+          <option value="administrador">Secretaria</option>
           <option value="administrativo">Plantel Administrativo</option>
           <option value="padre_familia">Padre / Tutor</option>
         </select>
