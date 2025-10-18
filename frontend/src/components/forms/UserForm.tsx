@@ -21,6 +21,7 @@ export function UserForm({
   const [tipo, setTipo] = useState<'administrador' | 'administrativo' | 'padre_familia'>('administrador');
 
   // Perfil
+  const [cedulaIdentidad, setCedulaIdentidad] = useState('');
   const [nombres, setNombres] = useState('');
   const [apellidos, setApellidos] = useState('');
   const [telefono, setTelefono] = useState('');
@@ -31,6 +32,7 @@ export function UserForm({
       setEmail(user.email);
       setTipo(user.tipo_usuario as 'administrador' | 'administrativo' | 'padre_familia');
       if (user.perfil) {
+        setCedulaIdentidad(user.perfil.cedula_identidad || '');
         setNombres(user.perfil.nombres || '');
         setApellidos(user.perfil.apellidos || '');
         setTelefono(user.perfil.telefono || '');
@@ -55,13 +57,13 @@ export function UserForm({
       // Perfil
       if (user.perfil) {
         data.perfil = {
+          cedula_identidad:cedulaIdentidad,
           nombres: nombres,
           apellidos: apellidos,
           telefono: telefono
         };
       } else {
-        // Si no había perfil antes, lo creamos completo
-        data.perfil = { nombres, apellidos, telefono };
+        data.perfil = {cedula_identidad: cedulaIdentidad, nombres, apellidos, telefono };
       }
     } else {
       // Creación
@@ -69,7 +71,7 @@ export function UserForm({
         email,
         password,
         tipo_usuario: tipo,
-        perfil: { nombres, apellidos, telefono }
+        perfil: { cedula_identidad: cedulaIdentidad, nombres, apellidos, telefono }
       };
     }
 
@@ -131,6 +133,14 @@ export function UserForm({
         </select>
 
         {/* Perfil */}
+        <input
+          type="text"
+          placeholder="Cedula de Identidad"
+          value={cedulaIdentidad}
+          onChange={e => setCedulaIdentidad(e.target.value)}
+          required
+          className="w-full px-3 py-2 border rounded-lg"
+        />
         <input
           type="text"
           placeholder="Nombres"

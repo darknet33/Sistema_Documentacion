@@ -38,5 +38,4 @@ export { Notification } from "./ui/Notification"
 export { LogoutButton } from "./ui/LogoutButton"
 export { DashboardAdmin } from "./ui/DashboardAdmin"
 export { DashboardPadreFamilia } from "./ui/DashboardPadreFamilia"
-export { ThemeToggle } from "./ui/ThemeToggle"
 

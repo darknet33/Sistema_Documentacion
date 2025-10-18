@@ -15,7 +15,7 @@ export function EstudianteForm({ estudiante, loading = false, error, onSubmit, o
 
   useEffect(() => {
     if (estudiante) {
-      setCodigo(estudiante.codigo_estudiante);
+      setCodigo(estudiante.cedula_identidad);
       setNombres(estudiante.nombres);
       setApellidos(estudiante.apellidos);
       setFechaNacimiento(estudiante.fecha_nacimiento);
@@ -48,7 +48,7 @@ export function EstudianteForm({ estudiante, loading = false, error, onSubmit, o
     }
 
     const data: NewEstudiante | UpdateEstudiante = {
-      codigo_estudiante: codigo,
+      cedula_identidad: codigo,
       nombres: capitalizeWords(nombres),
       apellidos: capitalizeWords(apellidos),
       fecha_nacimiento: fechaNacimiento,

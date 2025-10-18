@@ -4,6 +4,7 @@ import type { EstudianteOut } from "../../types/estudiante";
 import { useDocumentosEstudiante } from "../../hooks/useDocumentoEstudiante";
 import { DocumentosEstudianteTable } from "../tables/DocumentosEstudianteTable";
 import { EntregaDocumentoForm } from "../forms/EntregaDocumentoForm";
+import { LoadingScreen } from "../ui/LoadingScreen";
 
 interface Props {
   estudiante: EstudianteOut;
@@ -13,6 +14,7 @@ export function DocumentosEstudiantePanel({ estudiante }: Props) {
   const {
     documentosCombinados,
     createDocumentoEstudiante,
+    deleteDocumentoEstudiante,
     loading,
   } = useDocumentosEstudiante(estudiante.id, estudiante.curso_id);
 
@@ -26,17 +28,31 @@ export function DocumentosEstudiantePanel({ estudiante }: Props) {
     setSelectedDoc(null);
   };
 
-  if (loading) return <p>Cargando documentos...</p>;
+  const handleDeleteEntrega = async (docId: number) => {
+    console.log(docId)
+    await deleteDocumentoEstudiante(docId);
+    setSelectedDoc(null);
+  };
+
+
+  if (loading) return <LoadingScreen/>;
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-semibold mb-4">
-        Documentos requeridos de {estudiante.nombres} {estudiante.apellidos}
-      </h2>
+      <h5 className="text-xl mb-4">
+        <strong className=" text-indigo-600">Estudiante:</strong> {estudiante.nombres} {estudiante.apellidos}
+      </h5>
+      <h5 className="text-xl mb-4">
+        <strong className=" text-indigo-600">Curso:</strong> {estudiante.curso?.nombre} ({estudiante.curso?.nivel})
+      </h5>
+      <h5 className="text-xl mb-4">
+        <strong className=" text-indigo-600">CI:</strong> {estudiante.cedula_identidad}
+      </h5>
 
       <DocumentosEstudianteTable
         documentos={documentosCombinados}
         onEntregar={handleEntregar}
+        onDelete={handleDeleteEntrega}
       />
 
       {selectedDoc && (

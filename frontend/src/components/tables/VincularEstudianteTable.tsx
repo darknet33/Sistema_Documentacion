@@ -16,7 +16,7 @@ export function VincularEstudianteTable({
     const trimmed = search.trim().toLowerCase();
     if (!trimmed) return [];
     return estudiantes.filter(
-      (e) => e.codigo_estudiante?.toLowerCase() === trimmed
+      (e) => e.cedula_identidad?.toLowerCase() === trimmed
     );
   }, [search, estudiantes]);
 
@@ -38,7 +38,7 @@ export function VincularEstudianteTable({
         <table className="min-w-full border border-gray-200 rounded-lg overflow-hidden shadow-sm">
           <thead className="bg-gray-100">
             <tr>
-              <th className="px-4 py-2 text-left">Código</th>
+              <th className="px-4 py-2 text-left">Cedula de Identidad</th>
               <th className="px-4 py-2 text-left">Nombres</th>
               <th className="px-4 py-2 text-left">Apellidos</th>
               <th className="px-4 py-2 text-left">Curso</th>
@@ -53,7 +53,7 @@ export function VincularEstudianteTable({
                   key={est.id}
                   className="border-t border-gray-200 hover:bg-gray-50 transition"
                 >
-                  <td className="px-4 py-2">{est.codigo_estudiante}</td>
+                  <td className="px-4 py-2">{est.cedula_identidad}</td>
                   <td className="px-4 py-2">{est.nombres}</td>
                   <td className="px-4 py-2">{est.apellidos}</td>
                   <td className="px-4 py-2">

@@ -32,7 +32,7 @@ export function VincularEstudianteForm({ estudiante, onSubmit, onClose }: Vincul
         </h2>
 
         <div className="mb-3">
-          <p><strong>Estudiante:</strong> {estudiante.nombres} {estudiante.apellidos} ({estudiante.codigo_estudiante})</p>
+          <p><strong>Estudiante:</strong> {estudiante.nombres} {estudiante.apellidos} ({estudiante.cedula_identidad})</p>
           <p><strong>Curso:</strong> {estudiante.curso?.nombre} ({estudiante.curso?.nivel})</p>
           <hr className="my-2" />
           {user?.perfil && (

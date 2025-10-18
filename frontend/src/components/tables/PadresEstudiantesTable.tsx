@@ -36,10 +36,13 @@ export function PadresEstudiantesTable({
                 {pendientes.map((rel) => (
                     <tr key={rel.id}>
                         <td className="px-4 py-3 text-gray-800">
-                            {rel.perfil?.nombres + " " + rel.perfil?.apellidos || "Sin nombre"}
+                            <strong>Cedula:</strong> {rel.perfil?.cedula_identidad} <br />
+                            <strong>Nombre Completo:</strong>{rel.perfil?.nombres + " " + rel.perfil?.apellidos || "Sin nombre"}
                         </td>
                         <td className="px-4 py-3 text-gray-800">
-                            {rel.estudiante?.nombres + " " + rel.estudiante?.apellidos || "Sin nombre"}
+                            <strong>Cedula:</strong> {rel.estudiante?.cedula_identidad} <br />
+                            <strong>Nombre Completo:</strong> {rel.estudiante?.nombres + " " + rel.estudiante?.apellidos || "Sin nombre"} <br />
+                            <strong>Curso:</strong> {rel.estudiante?.curso?.nombre} ({rel.estudiante?.curso?.nivel})
                         </td>
                         <td className="px-4 py-3 text-gray-800">{rel.parentesco}</td>
                         <td className="px-4 py-3 text-gray-800">

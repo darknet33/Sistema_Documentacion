@@ -8,7 +8,7 @@ class Estudiante(Base):
     __tablename__ = "estudiantes"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    codigo_estudiante = Column(String(255), unique=True, nullable=False)
+    cedula_identidad = Column(String(255), unique=True, nullable=False)
     nombres = Column(String(255), nullable=False)
     apellidos = Column(String(255), nullable=False)
     fecha_nacimiento = Column(Date, nullable=False)

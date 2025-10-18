@@ -15,6 +15,9 @@ import Estudiantes from '../pages/Estudiantes';
 import VincularEstudiante from '../pages/VincularEstudiante';
 import RelacionesPendientes from '../pages/RelacionesPendientes';
 import Padres from '../pages/Padres';
+import DocumentosConfirmar from '../pages/DocumentosConfirmar';
+import DocumentosVencer from '../pages/DocumentosVencer';
+import DocumentosAprobados from '../pages/DocumentosAprobados';
 
 const AppRoutes = () => {
     const { isAuthenticated, user } = useAuth();
@@ -106,6 +109,33 @@ const AppRoutes = () => {
                 element={
                     <ProtectedRoute isAuthenticated={isAuthenticated}>
                         <Padres />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/documentos-por-confirmar"
+                element={
+                    <ProtectedRoute isAuthenticated={isAuthenticated}>
+                        <DocumentosConfirmar />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/documentos-por-vencer"
+                element={
+                    <ProtectedRoute isAuthenticated={isAuthenticated}>
+                        <DocumentosVencer />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/documentos-aprobados"
+                element={
+                    <ProtectedRoute isAuthenticated={isAuthenticated}>
+                        <DocumentosAprobados />
                     </ProtectedRoute>
                 }
             />

@@ -1,4 +1,5 @@
 export interface ProfileOut {
+    cedula_identidad: string;
     nombres: string;
     apellidos: string;
     telefono: string;
@@ -6,12 +7,14 @@ export interface ProfileOut {
 }
 
 export interface NewProfile {
+    cedula_identidad: string;
     nombres: string;
     apellidos: string;
     telefono: string;
 }
 
 export interface UpdateProfile {
+    cedula_identidad?: string;
     nombres?: string;
     apellidos?: string;
     telefono?: string;

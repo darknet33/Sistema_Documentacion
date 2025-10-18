@@ -40,6 +40,20 @@ export function ProfileForm({ profile, onSubmit, onCancel }: ProfileFormProps) {
 
             <div className="space-y-4">
                 <div>
+                    <label className="block text-gray-700 font-medium mb-1" htmlFor="cedula_identidad">
+                        Cedula de Identidad
+                    </label>
+                    <input
+                        id="cedula_identidad"
+                        name="cedula_identidad"
+                        type="text"
+                        value={formData.cedula_identidad}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
+                        required
+                    />
+                </div>
+                <div>
                     <label className="block text-gray-700 font-medium mb-1" htmlFor="nombres">
                         Nombres
                     </label>

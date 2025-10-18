@@ -10,7 +10,7 @@ class CursoOut(BaseModel):
     model_config = {"from_attributes": True}
 
 class EstudianteBase(BaseModel):
-    codigo_estudiante: str
+    cedula_identidad: str
     nombres: str
     apellidos: str
     fecha_nacimiento: date

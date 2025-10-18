@@ -19,6 +19,7 @@ export function PadreForm({
   const [password, setPassword] = useState('');
 
   // Perfil
+  const [cedulaIdentidad, setCedulaIdentidad] = useState('');
   const [nombres, setNombres] = useState('');
   const [apellidos, setApellidos] = useState('');
   const [telefono, setTelefono] = useState('');
@@ -28,6 +29,7 @@ export function PadreForm({
     if (user) {
       setEmail(user.email);
       if (user.perfil) {
+        setCedulaIdentidad(user.perfil.cedula_identidad || '');
         setNombres(user.perfil.nombres || '');
         setApellidos(user.perfil.apellidos || '');
         setTelefono(user.perfil.telefono || '');
@@ -47,8 +49,8 @@ export function PadreForm({
         tipo_usuario: 'padre_familia',
         password: '', // no se usa en update
         perfil: user.perfil
-          ? { nombres, apellidos, telefono }
-          : { nombres, apellidos, telefono },
+          ? { cedula_identidad: cedulaIdentidad, nombres, apellidos, telefono }
+          : { cedula_identidad: cedulaIdentidad, nombres, apellidos, telefono },
       };
     } else {
       // Creación
@@ -56,7 +58,7 @@ export function PadreForm({
         email,
         password,
         tipo_usuario: 'padre_familia',
-        perfil: { nombres, apellidos, telefono },
+        perfil: { cedula_identidad: cedulaIdentidad, nombres, apellidos, telefono },
       };
     }
 
@@ -106,6 +108,14 @@ export function PadreForm({
         {/* Perfil */}
         <input
           type="text"
+          placeholder="Cedula de Identidad"
+          value={cedulaIdentidad}
+          onChange={(e) => setCedulaIdentidad(e.target.value)}
+          required
+          className="w-full px-3 py-2 border rounded-lg"
+        />
+        <input
+          type="text"
           placeholder="Nombres"
           value={nombres}
           onChange={(e) => setNombres(e.target.value)}
@@ -138,8 +148,8 @@ export function PadreForm({
           {loading
             ? 'Guardando...'
             : user
-            ? 'Actualizar Padre de Familia'
-            : 'Registrar Padre de Familia'}
+              ? 'Actualizar Padre de Familia'
+              : 'Registrar Padre de Familia'}
         </button>
       </form>
     </div>

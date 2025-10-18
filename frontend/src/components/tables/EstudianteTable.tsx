@@ -11,7 +11,7 @@ export function EstudianteTable({ estudiantes, onEdit, onToggle, onDelete }: Est
     return estudiantes.filter(e =>
       e.nombres.toLowerCase().includes(search.toLowerCase()) ||
       e.apellidos.toLowerCase().includes(search.toLowerCase()) ||
-      e.codigo_estudiante.toLowerCase().includes(search.toLowerCase())
+      e.cedula_identidad.toLowerCase().includes(search.toLowerCase())
     );
   }, [search, estudiantes]);
 
@@ -49,7 +49,7 @@ export function EstudianteTable({ estudiantes, onEdit, onToggle, onDelete }: Est
         <tbody>
           {displayed.map(est => (
             <tr key={est.id} className="border-t border-gray-200 hover:bg-gray-50 transition">
-              <td className="px-4 py-2">{est.codigo_estudiante}</td>
+              <td className="px-4 py-2">{est.cedula_identidad}</td>
               <td className="px-4 py-2">{est.nombres}</td>
               <td className="px-4 py-2">{est.apellidos}</td>
               <td className="px-4 py-2">{est.curso?.nombre} ({est.curso?.nivel})</td>

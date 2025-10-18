@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import Base, engine
 from app.modules import router as modules_router
 from fastapi.staticfiles import StaticFiles
+import os
 
 # Crea la aplicación FastAPI
 app = FastAPI(
@@ -27,7 +28,12 @@ app.add_middleware(
     allow_headers=["*"],            # Headers permitidos
 )
 
-app.mount("/static", StaticFiles(directory="uploads"), name="static")
+# Ruta absoluta a la carpeta 'static' dentro de 'app'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # /path/to/backend/app
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+
+# Montar la carpeta estática
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 
 # Al iniciar la aplicación, crea las tablas si no existen en 'test.db'

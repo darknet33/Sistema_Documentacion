@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, Date, Boolean, String
+from sqlalchemy import Column, Integer, ForeignKey, Date, Boolean, String,DateTime
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 from app.utils.datetime import now_bolivia
@@ -13,8 +13,10 @@ class DocumentoEstudiante(Base):
     entregado = Column(Boolean, default=False, nullable=False)
     fecha_entrega = Column(Date, nullable=True)
     archivo_digital = Column(String, nullable=True)
-    fecha_registro= Column(Date, nullable=False, default=now_bolivia)
-    fecha_actualizacion = Column(Date, nullable=False, default=now_bolivia, onupdate=now_bolivia)
+    fecha_vencimiento = Column(Date, nullable=True)
+    observaciones = Column(String, nullable=True, default="Enviado por Confirmar")
+    fecha_registro= Column(DateTime(timezone=True), nullable=False, default=now_bolivia)
+    fecha_actualizacion = Column(DateTime(timezone=True), nullable=False, default=now_bolivia, onupdate=now_bolivia)
 
     # Relaciones
     estudiante = relationship("Estudiante", back_populates="documentos_estudiante", lazy="joined")

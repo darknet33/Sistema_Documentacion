@@ -10,12 +10,12 @@ export function ProfileCard({ profile, onEdit }: ProfileCardProps) {
 
       <div className="space-y-2">
         <p>
-          <span className="font-medium text-gray-600">Nombre:</span>{" "}
-          {profile.nombres}
+          <span className="font-medium text-gray-600">Cedula de Identidad:</span>{" "}
+          {profile.cedula_identidad}
         </p>
         <p>
-          <span className="font-medium text-gray-600">Apellidos:</span>{" "}
-          {profile.apellidos}
+          <span className="font-medium text-gray-600">Nombre Completo:</span>{" "}
+          {profile.nombres} {profile.apellidos}
         </p>
         <p>
           <span className="font-medium text-gray-600">Teléfono:</span>{" "}

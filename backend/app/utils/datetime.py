@@ -1,12 +1,12 @@
 from datetime import datetime
-from zoneinfo import ZoneInfo  # Python 3.9+
+from zoneinfo import ZoneInfo
 
-# Zona horaria de Bolivia
 BOLIVIA_TZ = ZoneInfo("America/La_Paz")
 
 def now_bolivia() -> datetime:
-    """
-    Devuelve la fecha y hora actual en Bolivia.
-    Se puede usar como default o onupdate en SQLAlchemy.
-    """
+    """Devuelve fecha y hora actual en Bolivia"""
     return datetime.now(BOLIVIA_TZ)
+
+def today_bolivia() -> datetime.date:
+    """Devuelve solo la fecha actual en Bolivia"""
+    return now_bolivia().date()

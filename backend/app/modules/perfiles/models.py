@@ -14,6 +14,7 @@ class Perfil(Base):
     apellidos = Column(String(100), nullable=False)
     telefono = Column(String(20), nullable=True)
     fecha_actualizacion = Column(DateTime(timezone=True), default=now_bolivia, onupdate=now_bolivia, nullable=False)
+    cedula_identidad = Column(String(20), nullable=True)
 
     usuario = relationship("User", back_populates="perfil")
     padres_estudiantes = relationship("Padres_Estudiantes", back_populates="perfil", cascade="all, delete-orphan")

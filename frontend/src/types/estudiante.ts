@@ -3,7 +3,7 @@ import type { PadresEstudiantesCreate } from "./padresEstudiantes";
 
 export interface EstudianteOut {
   id: number;
-  codigo_estudiante: string;
+  cedula_identidad: string;
   nombres: string;
   apellidos: string;
   fecha_nacimiento: string;
@@ -13,7 +13,7 @@ export interface EstudianteOut {
 }
 
 export interface NewEstudiante {
-  codigo_estudiante: string;
+  cedula_identidad: string;
   nombres: string;
   apellidos: string;
   fecha_nacimiento: string;

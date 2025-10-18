@@ -68,12 +68,15 @@ export const usePadreEstudiante = (perfilId?: number) => {
     return updated;
   };
 
+  const pendientes = relaciones.filter((r) => r.observacion === "Solicitado" && !r.estado);
+
   useEffect(() => {
     loadRelaciones();
   }, [perfilId]);
 
   return {
     relaciones,
+    pendientes,
     loading,
     error,
     addRelacion,
