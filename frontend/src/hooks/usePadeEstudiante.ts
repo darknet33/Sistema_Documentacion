@@ -16,6 +16,7 @@ import {
 
 export const usePadreEstudiante = (perfilId?: number) => {
   const [relaciones, setRelaciones] = useState<PadresEstudiantesOut[]>([]);
+  const [pendientes, setPendientes] = useState<PadresEstudiantesOut[]>([])
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,6 +28,7 @@ export const usePadreEstudiante = (perfilId?: number) => {
         ? await fetchPadresEstudiantesByPerfilApi(perfilId)
         : await fetchPadresEstudiantesApi();
       setRelaciones(data);
+      setPendientes(data.filter((r) => r.observacion === "Solicitado" && !r.estado));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error desconocido");
     } finally {
@@ -67,8 +69,6 @@ export const usePadreEstudiante = (perfilId?: number) => {
     setRelaciones((prev) => prev.map((r) => (r.id === id ? updated : r)));
     return updated;
   };
-
-  const pendientes = relaciones.filter((r) => r.observacion === "Solicitado" && !r.estado);
 
   useEffect(() => {
     loadRelaciones();

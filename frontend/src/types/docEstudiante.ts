@@ -12,6 +12,7 @@ export interface DocumentoEstudianteOut{
     observaciones?: string | null;
     estudiante: EstudianteOut | null;
     catalogo_documento: DocumentOut| null;
+    estadoVencimiento?: string | null
 }
 
 export interface DocumentoEstudianteCreate{

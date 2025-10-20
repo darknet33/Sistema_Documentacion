@@ -30,7 +30,7 @@ class DocumentoEstudianteBase(BaseModel):
     fecha_entrega: Optional[date] = None
     archivo_digital: Optional[str] = None
     fecha_vencimiento: Optional[date] = None
-    observaciones: Optional[str] = ""
+    observaciones: Optional[str] = None
 class DocumentoEstudianteCreate(DocumentoEstudianteBase):
     pass
 

@@ -99,7 +99,6 @@ export function CurseForm({
           className="w-full px-3 py-2 border rounded-lg"
         >
           <option value="">Seleccione nivel</option>
-          <option value="Primaria">Primaria</option>
           <option value="Secundaria">Secundaria</option>
         </select>
 

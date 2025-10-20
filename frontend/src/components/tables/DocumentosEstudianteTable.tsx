@@ -35,6 +35,7 @@ export function DocumentosEstudianteTable({ documentos, onEntregar, onDelete }: 
             <th className="p-2 border-b text-center text-indigo-600">Fecha de entrega</th>
             <th className="p-2 border-b text-center">Fecha de vencimiento</th>
             <th className="p-2 border-b text-center">Observaciones</th>
+            <th className="p-2 border-b text-center">Estado</th>
             <th className="p-2 border-b text-center">Acción</th>
           </tr>
         </thead>
@@ -49,6 +50,7 @@ export function DocumentosEstudianteTable({ documentos, onEntregar, onDelete }: 
               <td className="p-2 border-b text-center">{doc.documento?.fecha_entrega ? new Date(doc.documento.fecha_entrega).toLocaleDateString() : "-"}</td>
               <td className="p-2 border-b text-center">{doc.documento?.fecha_vencimiento ? new Date(doc.documento.fecha_vencimiento).toLocaleDateString() : "-"}</td>
               <td className="p-2 border-b text-center">{doc.documento?.observaciones || "-"}</td>
+              <td className="p-2 border-b text-center">{doc.documento?.estadoVencimiento || "-"}</td>
               <td className="p-2 border-b text-center">
                 <div className="flex justify-center gap-2 flex-wrap">
                   {doc.documento?.archivo_digital && (

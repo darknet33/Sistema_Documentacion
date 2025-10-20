@@ -1,14 +1,16 @@
 // src/hooks/useDashboardData.ts
 import { useState, useEffect } from "react";
-import { authFetch } from "../api/authFetch";
+import { useCurse } from "./useCurse";
+import { useDocumentoEstudianteAll } from "./useDocumentoEstudianteAll";
 
-export interface CursoDashboard {
-  id: number;
-  nombre: string;
-  nivel: string;
-  activo: boolean;
-  totalEstudiantes: number;
-  totalDocsRequeridos: number;
+interface CursoCompleto {
+  id: number,
+  nombre: string,
+  nivel: string,
+  activo: boolean,
+  totalEstudiantes: number,
+  totalDocsRequeridos: number,
+  totalDocsEntregados:number
 }
 
 export function useDashboardData() {
@@ -16,21 +18,28 @@ export function useDashboardData() {
   const [error, setError] = useState<string | null>(null);
   const [totalEstudiantes, setTotalEstudiantes] = useState(0);
   const [totalDocsRequeridos, setTotalDocsRequeridos] = useState(0);
-  const [cursos, setCursos] = useState<CursoDashboard[]>([]);
+  const [totalDocsEntregados, setTotalDocsEntregados] = useState(0);
+  const [cursos, setCursos] = useState<CursoCompleto[]>([]);
+
+  const { cursosCompleto } = useCurse();
+  const { documentosAprobados } = useDocumentoEstudianteAll()
 
   useEffect(() => {
+
     async function fetchData() {
       setLoading(true);
       try {
-        const cursosCompleto: any[] = await authFetch("/cursos/completo");
-
         let estudiantesCount = 0;
         let docsCount = 0;
+        let entregadosCount=0;
+
 
         const cursosResumen = cursosCompleto.map(curso => {
           const totalEstudiantesCurso = curso.estudiantes?.length || 0;
           const totalDocsCurso = (curso.documentos_requeridos?.length || 0) * totalEstudiantesCurso;
+          const totalEntregadosCurso = documentosAprobados.map(da=> da.estudiante?.curso_id===curso.id)
 
+          entregadosCount+= totalEntregadosCurso.length;
           estudiantesCount += totalEstudiantesCurso;
           docsCount += totalDocsCurso;
 
@@ -40,12 +49,14 @@ export function useDashboardData() {
             nivel: curso.nivel,
             activo: curso.activo,
             totalEstudiantes: totalEstudiantesCurso,
-            totalDocsRequeridos: totalDocsCurso
+            totalDocsRequeridos: totalDocsCurso,
+            totalDocsEntregados: totalEntregadosCurso.length,
           };
         });
 
         setTotalEstudiantes(estudiantesCount);
         setTotalDocsRequeridos(docsCount);
+        setTotalDocsEntregados(entregadosCount);
         setCursos(cursosResumen);
       } catch (err: any) {
         console.error(err);
@@ -63,6 +74,7 @@ export function useDashboardData() {
     error,
     totalEstudiantes,
     totalDocsRequeridos,
+    totalDocsEntregados,
     cursos
   };
 }

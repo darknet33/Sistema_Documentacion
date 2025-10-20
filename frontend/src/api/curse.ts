@@ -1,4 +1,4 @@
-import type {CurseOut,NewCurse,UpdateCurse} from '../types/curse'
+import type {CurseOut,CursosOut,NewCurse,UpdateCurse} from '../types/curse'
 import { authFetch } from './authFetch';
 
 
@@ -6,6 +6,11 @@ import { authFetch } from './authFetch';
 export const fetchCurseApi = async (): Promise<CurseOut[]> => {
     return authFetch("/cursos/");
 };
+
+
+export const fetchCursosApi = async () : Promise<CursosOut[]> => {
+    return authFetch("/cursos/completo");
+}
 
 // Crear curso
 export const createCurseApi = async (user: NewCurse): Promise<CurseOut> => {

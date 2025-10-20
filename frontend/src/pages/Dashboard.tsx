@@ -6,7 +6,7 @@ const Dashboard = () => {
 
   const { user } = useAuth();
 
-  if (!user) return <LoadingScreen />;
+  if (!user) return <LoadingScreen message='Cargando Datos...' />;
 
   return (
     <PageLayout>
