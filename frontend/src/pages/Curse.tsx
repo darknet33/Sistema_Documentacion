@@ -1,15 +1,16 @@
 // src/pages/Users.tsx
 import { useState } from 'react';
-import { CurseTable, CurseForm, LoadingScreen, Notification, DocumentosRequeridosPanel } from '../components';
+import { CurseTable, CurseForm, LoadingScreen, DocumentosRequeridosPanel } from '../components';
 import { useCurse } from '../hooks/useCurse';
 import type { CurseOut, NewCurse, UpdateCurse } from '../types/curse';
 import { PageLayout } from '../layout/PageLayout';
+import { useNotification } from '../context/NotificationContext';
 
 const Curse = () => {
   const { curser, loading, error, addCurse, updateCurse, toggleStatus, deleteCurse } = useCurse();
   const [showForm, setShowForm] = useState(false);
   const [editCurse, setEditCurse] = useState<CurseOut | null>(null);
-  const [notification, setNotification] = useState<{ message: string; type?: 'success' | 'error' } | null>(null);
+  const { setNotification } = useNotification();
   const [selectedCourse, setSelectedCourse] = useState<CurseOut | null>(null);
   const [showDocuments, setShowDocuments] = useState(false)
 
@@ -27,38 +28,64 @@ const Curse = () => {
     setSelectedCourse(curso);
     setShowDocuments(true);
   };
-
   const handleSubmit = async (data: NewCurse | UpdateCurse) => {
     try {
       if (editCurse) {
         await updateCurse(editCurse.id, data as UpdateCurse);
-        setNotification({ message: `Curso: ${data.nombre} ${data.nivel} actualizado con éxito.`, type: 'success' });
+        setNotification({
+          message: `Curso ${data.nombre} ${data.nivel} actualizado con éxito.`,
+          type: "success",
+        });
       } else {
         await addCurse(data as NewCurse);
-        setNotification({ message: `Curso: ${data.nombre} ${data.nivel} creado con éxito.`, type: 'success' });
+        setNotification({
+          message: `Curso ${data.nombre} ${data.nivel} creado con éxito.`,
+          type: "success",
+        });
       }
       setShowForm(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      setNotification({ message: ` ${error} `, type: 'error' });
+      setNotification({
+        message: error?.message || "Error al guardar el curso.",
+        type: "error",
+      });
     }
   };
 
-  const handleToggle = (curse: CurseOut) => {
+  const handleToggle = async (curse: CurseOut) => {
     try {
-      toggleStatus(curse.id, !curse.activo);
-      !curse.activo
-        ? setNotification({ message: `Curso ${curse.nombre} ${curse.nivel} activado .`, type: 'success' })
-        : setNotification({ message: `Curso ${curse.nombre} ${curse.nivel} desactivado .`, type: 'success' })
-    } catch (error) {
-      console.error(error);
-      setNotification({ message: `Error al procesar la operación. `, type: 'error' });
+      await toggleStatus(curse.id, !curse.activo);
+      setNotification({
+        message: `Curso ${curse.nombre} ${curse.nivel} ${curse.activo ? "desactivado" : "activado"}.`,
+        type: "success",
+        duration: 2500
+      });
+    } catch {
+      setNotification({
+        message: "Error al cambiar el estado del curso.",
+        type: "error",
+        duration: 3000
+      });
     }
   };
 
-  const handleDelete = (curse: CurseOut) => {
-    if (confirm(`¿Eliminar usuario ${curse.nombre}?`)) {
-      deleteCurse(curse.id);
+  const handleDelete = async (curse: CurseOut) => {
+    if (confirm(`¿Eliminar curso ${curse.nombre}?`)) {
+      try {
+        await deleteCurse(curse.id);
+        setNotification({
+          message: `Curso ${curse.nombre} eliminado.`,
+          type: "success",
+          duration: 3000
+        });
+      } catch {
+        setNotification({
+          message: "No se pudo eliminar el curso.",
+          type: "error",
+          duration: 3000
+        });
+      }
     }
   };
 
@@ -95,14 +122,6 @@ const Curse = () => {
             />
           )}
         </>
-      )}
-
-      {notification && (
-        <Notification
-          message={notification.message}
-          type={notification.type}
-          onClose={() => setNotification(null)}
-        />
       )}
 
       {showDocuments && selectedCourse && (

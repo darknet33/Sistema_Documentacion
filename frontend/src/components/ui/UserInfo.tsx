@@ -1,46 +1,53 @@
+import { useState } from "react";
 import { User } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { LogoutButton } from "./LogoutButton";
 
 export function tipoUsuario(tipo_usuario: string) {
-    let tipo = "";
-    if (tipo_usuario === "administrador") {
-        tipo = "Secretaria"
-    } else if (tipo_usuario === "administrativo") {
-        tipo = "Plantel Administrativo"
-    } else if (tipo_usuario === "padre_familia") {
-        tipo = "Padre / Tutor"
-    }
-
-    return tipo;
+  if (tipo_usuario === "administrador") return "Secretaría";
+  if (tipo_usuario === "administrativo") return "Plantel Administrativo";
+  if (tipo_usuario === "padre_familia") return "Padre / Tutor";
+  return "";
 }
 
 export function UserInfo() {
-  const navigate = useNavigate();
-  const {user}=useAuth(); // para refrescar el contexto si es necesario
+  const { user } = useAuth();
+  const [openMenu, setOpenMenu] = useState(false);
 
   return (
-    <div className="px-3 py-4 border-b border-gray-200 flex flex-col items-center text-center">
-      {/* Perfil */}
-      <div
-        className="
-          flex flex-col items-center cursor-pointer 
-          hover:bg-gray-50 rounded-lg p-2 w-full transition
-        "
-        onClick={() => navigate("/perfil")}
-        title="Ver mi perfil"
+    <div className="relative">
+      {/* Botón con icono + nombre + tipo */}
+      <button
+        onClick={() => setOpenMenu(!openMenu)}
+        className="flex items-center gap-3 px-4 py-2 border-2 border-indigo-50 rounded-md hover:bg-gray-100 transition "
       >
-        <User className="h-16 w-16 text-indigo-600 mb-2" />
-        <p className="font-semibold text-lg text-gray-900">
-          {`${user?.perfil?.nombres} ${user?.perfil?.apellidos}`}
-        </p>
-        <p className="text-sm text-gray-500 mb-1">
-          {tipoUsuario(user?.tipo_usuario ?? "")}
-        </p>
-      </div>
+        <div className="text-left">
+          <p className="text-sm font-semibold text-gray-800">
+            {user?.perfil?.nombres} {user?.perfil?.apellidos}
+          </p>
+          <p className="text-xs text-gray-500">
+            {tipoUsuario(user?.tipo_usuario ?? "")}
+          </p>
+        </div>
+        <User className="h-8 w-8 text-indigo-600" />
+      </button>
 
-      <LogoutButton />
+      {/* Menú desplegable */}
+      {openMenu && (
+        <div className="absolute right-0 mt-2 w-44 bg-white shadow-lg border rounded-md z-50">
+          <ul className="text-sm">
+            <li
+              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+            >
+              <Link to="/perfil" onClick={()=>setOpenMenu(!openMenu)}> Ver Perfil </Link>
+            </li>
+            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-600">
+              <LogoutButton />
+            </li>
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { Sidebar } from "../components";
+import { Notification, Sidebar } from "../components";
+import { UserInfo } from "../components/ui/UserInfo";
 
 interface PageLayoutProps {
   children: ReactNode;
@@ -15,12 +16,15 @@ export function PageLayout({ children, title }: PageLayoutProps) {
       <Sidebar />
 
       {/* Contenido principal */}
-      <main className="flex-1 p-8 overflow-y-auto">
-        <div className="flex justify-between items-center mt-5 mb-3">
+      <main className="flex-1 px-5">
+        <div className="flex justify-between items-center my-3">
           {title && (
-            <h1 className="text-2xl font-bold tracking-tight text-indigo-700">{title}</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-indigo-700">{title}</h1>
           )}
+          <UserInfo/>
         </div>
+
+        <Notification/>
 
         {children}
       </main>

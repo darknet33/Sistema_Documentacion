@@ -1,14 +1,17 @@
 // src/App.tsx
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { NotificationProvider } from './context/NotificationContext';
 import AppRoutes from './routes/AppRoutes';
 
 const App: React.FC = () => (
     <AuthProvider>
-        <Router>
-            <AppRoutes />
-        </Router>
+        <NotificationProvider>
+            <BrowserRouter>
+                <AppRoutes />
+            </BrowserRouter>
+        </NotificationProvider>
     </AuthProvider>
 );
 

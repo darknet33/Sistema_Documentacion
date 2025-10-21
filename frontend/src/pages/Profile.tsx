@@ -5,9 +5,12 @@ import { useProfile } from "../hooks/useProfile";
 import type { UserOut } from "../types/users";
 import type { NewProfile, ProfileOut, UpdateProfile } from "../types/profile";
 import { PageLayout } from "../layout/PageLayout";
+import { useNotification } from "../context/NotificationContext";
 
 function Profile() {
     const { user } = useAuth();
+    const { setNotification } = useNotification();
+
     const [showForm, setShowForm] = useState(false);
     const [editProfile, setEditProfile] = useState<ProfileOut | null>(null);
 
@@ -22,20 +25,33 @@ function Profile() {
         try {
             if (editProfile) {
                 await updateProfile(editProfile.id, data as UpdateProfile);
-                alert(`Perfil de ${data.nombres} actualizado con éxito.`);
-                if (user && editProfile) {
+                
+                // Actualizar usuario en contexto local
+                if (user) {
                     user.perfil = { ...editProfile, ...data };
                 }
+
+                setNotification({
+                    message: `Perfil de ${data.nombres} actualizado con éxito.`,
+                    type: "success",
+                });
             }
             setShowForm(false);
-        } catch (err) {
+        } catch (err: any) {
             console.error(err);
-            alert("Error al procesar la operación.");
+            setNotification({
+                message: err?.message || "Error al actualizar el perfil.",
+                type: "error",
+            });
         }
     };
 
     const handleCancel = () => {
         setShowForm(false);
+        setNotification({
+            message: "Edición de perfil cancelada.",
+            type: "success",
+        });
     };
 
     return (
@@ -50,7 +66,7 @@ function Profile() {
                         <ProfileCard profile={profile} onEdit={handleEdit} />
                     </div>
 
-                    {/* Formulario de edición (solo si showForm es true) */}
+                    {/* Formulario de edición */}
                     {showForm && editProfile && (
                         <div className="flex-1">
                             <ProfileForm

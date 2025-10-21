@@ -1,18 +1,26 @@
 import { useState } from "react";
-import { EstudianteForm, EstudianteTable, LoadingScreen, Notification } from "../components";
+import { EstudianteForm, EstudianteTable, LoadingScreen } from "../components";
 import { useEstudiantes } from "../hooks/useEstudiantes";
 import type { EstudianteOut, NewEstudiante, UpdateEstudiante } from "../types/estudiante";
 import { PageLayout } from "../layout/PageLayout";
+import { useNotification } from "../context/NotificationContext";
 
 export default function Estudiantes() {
   const { estudiantes, loading, error, addEstudiante, updateEstudiante, toggleStatus, deleteEstudiante } = useEstudiantes();
+  const { setNotification } = useNotification();
 
   const [showForm, setShowForm] = useState(false);
   const [editEstudiante, setEditEstudiante] = useState<EstudianteOut | null>(null);
-  const [notification, setNotification] = useState<{ message: string; type?: "success" | "error" } | null>(null);
 
-  const handleCreate = () => { setEditEstudiante(null); setShowForm(true); };
-  const handleEdit = (est: EstudianteOut) => { setEditEstudiante(est); setShowForm(true); };
+  const handleCreate = () => {
+    setEditEstudiante(null);
+    setShowForm(true);
+  };
+
+  const handleEdit = (est: EstudianteOut) => {
+    setEditEstudiante(est);
+    setShowForm(true);
+  };
 
   const handleSubmit = async (data: NewEstudiante | UpdateEstudiante) => {
     try {
@@ -24,42 +32,67 @@ export default function Estudiantes() {
         setNotification({ message: `Estudiante creado correctamente.`, type: "success" });
       }
       setShowForm(false);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setNotification({ message: `Error: ${err}`, type: "error" });
+      setNotification({ message: err?.message || "Error al guardar estudiante.", type: "error" });
     }
   };
 
   const handleToggleActivo = async (est: EstudianteOut) => {
-    await toggleStatus(est.id, !est.activo);
-    setNotification({ message: `Estudiante ${est.activo ? "desactivado" : "activado"}.`, type: "success" });
+    try {
+      await toggleStatus(est.id, !est.activo);
+      setNotification({
+        message: `Estudiante ${est.activo ? "desactivado" : "activado"}.`,
+        type: "success"
+      });
+    } catch {
+      setNotification({ message: "No se pudo cambiar el estado del estudiante.", type: "error" });
+    }
   };
 
   const handleDelete = async (est: EstudianteOut) => {
-    if (confirm(`Eliminar estudiante ${est.nombres} ${est.apellidos}?`)) {
+    if (!confirm(`¿Eliminar estudiante ${est.nombres} ${est.apellidos}?`)) return;
+
+    try {
       await deleteEstudiante(est.id);
-      setNotification({ message: `Estudiante eliminado.`, type: "success" });
+      setNotification({ message: `Estudiante eliminado correctamente.`, type: "success" });
+    } catch {
+      setNotification({ message: "No se pudo eliminar el estudiante.", type: "error" });
     }
   };
 
   return (
     <PageLayout title="Panel de Estudiantes">
       {showForm ? (
-        <EstudianteForm estudiante={editEstudiante || undefined} onSubmit={handleSubmit} onCancel={() => setShowForm(false)} />
+        <EstudianteForm
+          estudiante={editEstudiante || undefined}
+          onSubmit={handleSubmit}
+          onCancel={() => setShowForm(false)}
+        />
       ) : (
         <>
           <div className="flex justify-end mb-4">
-            <button onClick={handleCreate} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Crear Estudiante</button>
+            <button
+              onClick={handleCreate}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+            >
+              Crear Estudiante
+            </button>
           </div>
 
           {loading && <LoadingScreen />}
           {error && <p className="text-red-600">{error}</p>}
-          {!loading && <EstudianteTable estudiantes={estudiantes} onEdit={handleEdit} onToggle={handleToggleActivo} onDelete={handleDelete} />}
+
+          {!loading && (
+            <EstudianteTable
+              estudiantes={estudiantes}
+              onEdit={handleEdit}
+              onToggle={handleToggleActivo}
+              onDelete={handleDelete}
+            />
+          )}
         </>
       )}
-
-      {notification && <Notification message={notification.message} type={notification.type} onClose={() => setNotification(null)} />}
-
     </PageLayout>
   );
 }

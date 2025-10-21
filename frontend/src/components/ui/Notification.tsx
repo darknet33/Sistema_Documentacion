@@ -1,31 +1,31 @@
 // src/components/Notification.tsx
-import { useEffect } from 'react';
+import { useEffect } from "react";
+import { useNotification } from "../../context/NotificationContext";
 
-type NotificationProps = {
-  message: string;
-  type?: 'success' | 'error';
-  onClose: () => void;
-  duration?: number; // ms
-};
+export function Notification() {
+  const { notification, setNotification } = useNotification();
 
-export function Notification ({
-  message,
-  type = 'success',
-  onClose,
-  duration = 3000,
-}:NotificationProps){
+  // Ocultar después del tiempo configurado
   useEffect(() => {
-    const timer = setTimeout(() => onClose(), duration);
-    return () => clearTimeout(timer);
-  }, [duration, onClose]);
+    if (!notification) return;
 
-  const bgColor = type === 'success' ? 'bg-green-700' : 'bg-red-500';
+    const timer = setTimeout(() => {
+      setNotification(null);
+    }, notification.duration ?? 5000);
+
+    return () => clearTimeout(timer);
+  }, [notification, setNotification]);
+
+  if (!notification) return null;
+
+  const bgColor =
+    notification.type === "success" ? "bg-green-600" : "bg-red-600";
 
   return (
     <div
-      className={`fixed top-4 right-4 px-4 py-2 text-white rounded shadow-lg ${bgColor} animate-slideIn`}
+      className={`fixed top-4 right-4 px-4 py-2 text-white rounded shadow-lg ${bgColor}`}
     >
-      {message}
+      {notification.message}
     </div>
   );
-};
+}

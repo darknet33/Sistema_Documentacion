@@ -4,7 +4,6 @@ import { LayoutDashboard, Menu, X } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useMenu } from "../../hooks/useMenu";
 import { LoadingScreen } from "./LoadingScreen";
-import { UserInfo } from "./UserInfo";
 import MenuItems from "./MenuItems";
 
 export function Sidebar() {
@@ -43,8 +42,6 @@ export function Sidebar() {
                 Sistema Control Documentos
               </span>
             </div>
-
-            <UserInfo />
 
             {/* Menú dinámico */}
             <nav className="flex flex-col gap-1 mt-4 px-4">

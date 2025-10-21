@@ -1,15 +1,16 @@
-// src/pages/Padres.tsx
 import { useState } from "react";
-import { UserTable, LoadingScreen, Notification, PadreForm } from "../components";
+import { UserTable, LoadingScreen, PadreForm } from "../components";
 import { useUsers } from "../hooks/useUsers";
-import { type UserOut, type NewUser, type UpdateUser } from "../types/users";
+import type { UserOut, NewUser, UpdateUser } from "../types/users";
 import { PageLayout } from "../layout/PageLayout";
+import { useNotification } from "../context/NotificationContext";
 
 const Padres = () => {
     const { users, loading, error, addUser, updateUser, toggleStatus, deleteUser } = useUsers();
+    const { setNotification } = useNotification();
+
     const [showForm, setShowForm] = useState(false);
     const [editUser, setEditUser] = useState<UserOut | null>(null);
-    const [notification, setNotification] = useState<{ message: string; type?: "success" | "error" } | null>(null);
 
     // 🔹 Filtrar solo padres de familia
     const padres = users.filter((u) => u.tipo_usuario === "padre_familia");
@@ -41,9 +42,9 @@ const Padres = () => {
                 });
             }
             setShowForm(false);
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            setNotification({ message: `Error: ${error}`, type: "error" });
+            setNotification({ message: error?.message || "Error al procesar la operación.", type: "error" });
         }
     };
 
@@ -62,9 +63,18 @@ const Padres = () => {
         }
     };
 
-    const handleDelete = (user: UserOut) => {
-        if (confirm(`¿Eliminar al padre ${user.email}?`)) {
-            deleteUser(user.id);
+    const handleDelete = async (user: UserOut) => {
+        if (!confirm(`¿Eliminar al padre ${user.email}?`)) return;
+
+        try {
+            await deleteUser(user.id);
+            setNotification({
+                message: `Padre ${user.email} eliminado correctamente.`,
+                type: "success",
+            });
+        } catch (error) {
+            console.error(error);
+            setNotification({ message: "No se pudo eliminar al padre.", type: "error" });
         }
     };
 
@@ -91,6 +101,7 @@ const Padres = () => {
 
                     {loading && <LoadingScreen />}
                     {error && <p className="text-red-600">{error}</p>}
+
                     {!loading && (
                         <UserTable
                             users={padres}
@@ -100,14 +111,6 @@ const Padres = () => {
                         />
                     )}
                 </>
-            )}
-
-            {notification && (
-                <Notification
-                    message={notification.message}
-                    type={notification.type}
-                    onClose={() => setNotification(null)}
-                />
             )}
         </PageLayout>
     );

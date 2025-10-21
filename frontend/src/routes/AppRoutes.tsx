@@ -6,7 +6,6 @@ import Dashboard from '../pages/Dashboard';
 import Users from '../pages/Users';
 import Signin from '../pages/SignIn';
 import ProtectedRoute from './ProtectedRoute';
-import { LoadingScreen } from '../components/';
 import Profile from '../pages/Profile';
 import NotFound from '../pages/NotFound';
 import Curse from '../pages/Curse';
@@ -20,10 +19,7 @@ import DocumentosVencer from '../pages/DocumentosVencer';
 import DocumentosAprobados from '../pages/DocumentosAprobados';
 
 const AppRoutes = () => {
-    const { isAuthenticated, user } = useAuth();
-
-    // Muestra loading mientras se determina el estado inicial
-    if (user === undefined) return <LoadingScreen />;
+    const { isAuthenticated } = useAuth();
 
     return (
         <Routes>

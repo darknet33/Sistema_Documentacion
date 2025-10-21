@@ -1,15 +1,17 @@
 // src/pages/Users.tsx
 import { useState } from 'react';
-import { UserTable, UserForm, LoadingScreen, Notification } from '../components';
+import { UserTable, UserForm, LoadingScreen } from '../components';
 import { useUsers } from '../hooks/useUsers';
 import { type UserOut, type NewUser, type UpdateUser } from '../types/users';
 import { PageLayout } from '../layout/PageLayout';
+import { useNotification } from '../context/NotificationContext';
 
 const Users = () => {
   const { users, loading, error, addUser, updateUser, toggleStatus, deleteUser } = useUsers();
+  const { setNotification } = useNotification();
+
   const [showForm, setShowForm] = useState(false);
   const [editUser, setEditUser] = useState<UserOut | null>(null);
-  const [notification, setNotification] = useState<{ message: string; type?: 'success' | 'error' } | null>(null);
 
   const handleCreate = () => {
     setEditUser(null);
@@ -25,38 +27,56 @@ const Users = () => {
     try {
       if (editUser) {
         await updateUser(editUser.id, data as UpdateUser);
-        setNotification({ message: `Usuario ${data.perfil?.nombres} ${data.perfil?.apellidos} actualizado con éxito.`, type: 'success' });
+        setNotification({
+          message: `Usuario ${data.perfil?.nombres} ${data.perfil?.apellidos} actualizado con éxito.`,
+          type: 'success',
+        });
       } else {
         await addUser(data as NewUser);
-        setNotification({ message: `Usuario ${data.perfil?.nombres} ${data.perfil?.apellidos} creado con éxito.`, type: 'success' });
+        setNotification({
+          message: `Usuario ${data.perfil?.nombres} ${data.perfil?.apellidos} creado con éxito.`,
+          type: 'success',
+        });
       }
       setShowForm(false);
-    } catch (error) {
-      console.error(error);
-      setNotification({ message: ` ${error} `, type: 'error' });
+    } catch (err: any) {
+      console.error(err);
+      setNotification({
+        message: err?.message || 'Error al procesar la operación.',
+        type: 'error',
+      });
     }
   };
 
-  const handleToggle = (user: UserOut) => {
+  const handleToggle = async (user: UserOut) => {
     try {
-      toggleStatus(user.id, !user.activo);
-      !user.activo
-        ? setNotification({ message: `Usuario ${user.email} activado .`, type: 'success' })
-        : setNotification({ message: `Usuario ${user.email} desactivado .`, type: 'success' })
-    } catch (error) {
-      console.error(error);
-      setNotification({ message: 'Error al procesar la operación.', type: 'error' });
+      await toggleStatus(user.id, !user.activo);
+      setNotification({
+        message: !user.activo
+          ? `Usuario ${user.email} activado.`
+          : `Usuario ${user.email} desactivado.`,
+        type: 'success',
+      });
+    } catch (err: any) {
+      console.error(err);
+      setNotification({ message: err?.message || 'Error al procesar la operación.', type: 'error' });
     }
   };
 
-  const handleDelete = (user: UserOut) => {
+  const handleDelete = async (user: UserOut) => {
     if (confirm(`¿Eliminar usuario ${user.email}?`)) {
-      deleteUser(user.id);
+      try {
+        await deleteUser(user.id);
+        setNotification({ message: `Usuario ${user.email} eliminado.`, type: 'success' });
+      } catch (err: any) {
+        console.error(err);
+        setNotification({ message: err?.message || 'Error al eliminar usuario.', type: 'error' });
+      }
     }
   };
 
   return (
-    <PageLayout title='Panel de Usuarios'>
+    <PageLayout title="Panel de Usuarios">
       {showForm ? (
         <UserForm
           user={editUser || undefined}
@@ -87,13 +107,6 @@ const Users = () => {
             />
           )}
         </>
-      )}
-      {notification && (
-        <Notification
-          message={notification.message}
-          type={notification.type}
-          onClose={() => setNotification(null)}
-        />
       )}
     </PageLayout>
   );
