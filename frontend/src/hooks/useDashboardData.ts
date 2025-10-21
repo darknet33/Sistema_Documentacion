@@ -22,7 +22,7 @@ export function useDashboardData() {
   const [cursos, setCursos] = useState<CursoCompleto[]>([]);
 
   const { cursosCompleto } = useCurse();
-  const { documentosAprobados } = useDocumentoEstudianteAll()
+  const { documentosEntregados } = useDocumentoEstudianteAll()
 
   useEffect(() => {
 
@@ -37,7 +37,7 @@ export function useDashboardData() {
         const cursosResumen = cursosCompleto.map(curso => {
           const totalEstudiantesCurso = curso.estudiantes?.length || 0;
           const totalDocsCurso = (curso.documentos_requeridos?.length || 0) * totalEstudiantesCurso;
-          const totalEntregadosCurso = documentosAprobados.map(da=> da.estudiante?.curso_id===curso.id)
+          const totalEntregadosCurso = documentosEntregados.map(da=> da.estudiante?.curso_id===curso.id)
 
           entregadosCount+= totalEntregadosCurso.length;
           estudiantesCount += totalEstudiantesCurso;
@@ -67,7 +67,7 @@ export function useDashboardData() {
     }
 
     fetchData();
-  }, []);
+  }, [cursosCompleto]);
 
   return {
     loading,

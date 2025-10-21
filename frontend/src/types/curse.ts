@@ -8,6 +8,16 @@ export interface CurseOut {
     activo: boolean;
 }
 
+export interface CursoDashboard {
+    id: number,
+    nombre: string,
+    nivel: string,
+    activo: boolean,
+    totalEstudiantes: number,
+    totalDocsRequeridos: number,
+    totalDocsEntregados: number
+}
+
 export interface CursosOut {
     id: number;
     nombre: string;

@@ -18,13 +18,13 @@ const Landing = () => {
                     <nav>
                         {!token
                             ? <Link to="/login" className="px-4 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition">
-                                Login
+                                Inicia Sesión
                             </Link>
-                            : <div className='flex gap-1'>
+                            : <div className='flex gap-2'>
                                 <Link to="/dashboard" className="px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700 transition">
                                     Dashboard
                                 </Link>
-                                <LogoutButton/>
+                                <LogoutButton />
                             </div>
                         }
                     </nav>
