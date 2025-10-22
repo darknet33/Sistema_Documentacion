@@ -5,12 +5,18 @@ import type { DocumentoRequeridoOut } from "../types/docRequerido";
 export const useDocumentosRequeridos = (cursoId: number) => {
   const [requeridos, setRequeridos] = useState<DocumentoRequeridoOut[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<String | null>(null)
 
-  const load = async () => {
+  const loadDocRequeridos = async () => {
     setLoading(true);
-    const data = await fetchDocsByCursoApi(cursoId);
-    setRequeridos(data);
-    setLoading(false);
+    try {
+      const data = await fetchDocsByCursoApi(cursoId);
+      setRequeridos(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error desconocido");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const toggleRequerido = async (catalogoId: number, isActive: boolean) => {
@@ -26,8 +32,8 @@ export const useDocumentosRequeridos = (cursoId: number) => {
   };
 
   useEffect(() => {
-    load();
+    if (cursoId) loadDocRequeridos();
   }, [cursoId]);
 
-  return { requeridos, loading, toggleRequerido, reload: load };
+  return { requeridos, loading, error, toggleRequerido, reload: loadDocRequeridos };
 };

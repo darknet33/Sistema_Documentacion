@@ -15,6 +15,7 @@ export const authFetch = async (endpoint: string, options: RequestInit = {}) => 
 
   // Combinar headers pasados con los nuevos
   let optionHeaders: Record<string, string> = {};
+
   if (options.headers) {
     if (options.headers instanceof Headers) {
       options.headers.forEach((value, key) => {

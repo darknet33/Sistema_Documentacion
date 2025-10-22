@@ -63,3 +63,16 @@ export interface PadresEstudiantesTablePendingProps {
   handleAceptar: (id: number) => void;
   handleRechazar: (id: number) => void;
 }
+
+// Define el tipo de contexto (incluye estados y acciones)
+export interface PadreEstudianteContextType {
+    relaciones: PadresEstudiantesOut[];
+    pendientes: PadresEstudiantesOut[];
+    loading: boolean;
+    error: string | null;
+    aceptarRelacion: (id: number) => Promise<PadresEstudiantesOut>;
+    rechazarRelacion: (id: number, observacion?: string) => Promise<PadresEstudiantesOut>;
+    addRelacion: (rel: PadresEstudiantesCreate) => Promise<PadresEstudiantesOut>;
+    updateRelacion: (id: number, updates: PadresEstudiantesUpdate) => Promise<PadresEstudiantesOut>;
+    deleteRelacion: (id:number) => void;
+}

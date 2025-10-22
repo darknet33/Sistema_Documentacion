@@ -4,10 +4,45 @@ import type {
 } from "../types/docEstudiante";
 import { authFetch } from "./authFetch";
 
+
+const calcularVencimiento = (data: DocumentoEstudianteOut[]) => {
+  // 💡 Optimización: Crear 'hoy' una sola vez y normalizar a medianoche (00:00:00) 
+  // para cálculos de diferencia de días más precisos.
+  const hoyMedianoche = new Date()
+  hoyMedianoche.setHours(0, 0, 0, 0) // Normaliza a inicio del día
+
+  // Define las constantes para los umbrales
+  const DIAS_PROXIMO = 7;
+  const MS_POR_DIA = 1000 * 60 * 60 * 24;
+
+  return data.map((doc) => {
+    if (!doc.fecha_vencimiento) {
+      return { ...doc, estadoVencimiento: 'Sin vencimiento' }
+    }
+
+    // Convierte y normaliza la fecha de vencimiento a medianoche para comparación de días.
+    const vencimientoMedianoche = new Date(doc.fecha_vencimiento)
+    vencimientoMedianoche.setHours(0, 0, 0, 0)
+
+    // Calcula la diferencia en días.
+    const diffDias = Math.floor(
+      (vencimientoMedianoche.getTime() - hoyMedianoche.getTime()) / MS_POR_DIA
+    )
+
+    // Lógica condensada con operador ternario (opcional para reducir líneas)
+    const estadoVencimiento =
+      diffDias < 0 ? 'Vencido' :
+        diffDias <= DIAS_PROXIMO ? 'Próximo a vencer' :
+          'Vigente'
+
+    return { ...doc, estadoVencimiento }
+  })
+}
+
 // 🔹 Obtener todos los documentos
 export const fetchDocumentosEstudiantesApi = async (): Promise<DocumentoEstudianteOut[]> => {
   const data = await authFetch("/documentos_estudiante/");
-  return data;
+  return calcularVencimiento(data);
 };
 
 // 🔹 Obtener documentos por estudiante

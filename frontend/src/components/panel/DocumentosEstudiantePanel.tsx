@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { EstudianteOut } from "../../types/estudiante";
-import { useDocumentosEstudiante } from "../../hooks/useDocumentoEstudiante";
+import { useDocumentosEstudiante } from "../../hooks/useDocumentoEstudiantePadres";
 import { DocumentosEstudianteTable } from "../tables/DocumentosEstudianteTable";
 import { EntregaDocumentoForm } from "../forms/EntregaDocumentoForm";
 import { LoadingScreen } from "../ui/LoadingScreen";
@@ -11,7 +11,7 @@ interface Props {
 
 export function DocumentosEstudiantePanel({ estudiante }: Props) {
   const {
-    documentosCombinados,
+    documentosRequeridosPorEstudiante,
     createDocumentoEstudiante,
     deleteDocumentoEstudiante,
     loading,
@@ -33,10 +33,10 @@ export function DocumentosEstudiantePanel({ estudiante }: Props) {
   };
 
   // Estadísticas de documentos
-  const documentosEntregados = documentosCombinados.filter(doc => doc.entregado);
-  const documentosPendientes = documentosCombinados.filter(doc => !doc.entregado);
-  const porcentajeCompletado = documentosCombinados.length > 0
-    ? Math.round((documentosEntregados.length / documentosCombinados.length) * 100)
+  const documentosEntregados = documentosRequeridosPorEstudiante.filter(doc => doc.entregado);
+  const documentosPendientes = documentosRequeridosPorEstudiante.filter(doc => !doc.entregado);
+  const porcentajeCompletado = documentosRequeridosPorEstudiante.length > 0
+    ? Math.round((documentosEntregados.length / documentosRequeridosPorEstudiante.length) * 100)
     : 0;
 
   if (loading) return <LoadingScreen />;
@@ -88,7 +88,7 @@ export function DocumentosEstudiantePanel({ estudiante }: Props) {
             <div className="text-gray-600 text-2xl mr-4 bg-gray-50 p-3 rounded-xl">📚</div>
             <div>
               <p className="text-sm text-gray-600 font-medium">Total Documentos</p>
-              <p className="text-2xl font-bold text-gray-800">{documentosCombinados.length}</p>
+              <p className="text-2xl font-bold text-gray-800">{documentosRequeridosPorEstudiante.length}</p>
             </div>
           </div>
         </div>
@@ -151,7 +151,7 @@ export function DocumentosEstudiantePanel({ estudiante }: Props) {
             </div>
           ) : (
             <DocumentosEstudianteTable
-              documentos={documentosCombinados}
+              documentos={documentosRequeridosPorEstudiante}
               onEntregar={handleEntregar}
               onDelete={handleDeleteEntrega}
             />
@@ -160,7 +160,7 @@ export function DocumentosEstudiantePanel({ estudiante }: Props) {
       </div>
 
       {/* Información adicional */}
-      {documentosCombinados.length === 0 && !selectedDoc && (
+      {documentosRequeridosPorEstudiante.length === 0 && !selectedDoc && (
         <div className="text-center py-12 bg-white rounded-2xl shadow-md border border-gray-100 mt-6">
           <div className="text-gray-300 text-6xl mb-4">📋</div>
           <h3 className="text-lg font-medium text-gray-700 mb-2">

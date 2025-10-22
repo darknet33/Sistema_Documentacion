@@ -1,80 +1,94 @@
 // src/hooks/useDashboardData.ts
-import { useState, useEffect } from "react";
+import { useMemo } from "react"; // 💡 Solo necesitamos useMemo
 import { useCurse } from "./useCurse";
-import { useDocumentoEstudianteAll } from "./useDocumentoEstudianteAll";
+import { useDocumentoEstudianteAll } from "./useDocumentoEstudianteAdmin";
 
-interface CursoCompleto {
-  id: number,
-  nombre: string,
-  nivel: string,
-  activo: boolean,
-  totalEstudiantes: number,
-  totalDocsRequeridos: number,
-  totalDocsEntregados:number
+// Define la estructura de tu valor derivado
+interface CursoCompletoResumen {
+  id: number;
+  nombre: string;
+  nivel: string;
+  activo: boolean;
+  totalEstudiantes: number;
+  totalDocsRequeridos: number; // Documentos que DEBERÍAN haber sido entregados
+  totalDocsEntregados: number; // Documentos REALMENTE entregados por estudiantes de este curso
 }
 
+// 📌 Notas: Los estados 'loading' y 'error' deben venir de los hooks que hacen el fetch (useCurse y useDocumentoEstudianteAll)
+
 export function useDashboardData() {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [totalEstudiantes, setTotalEstudiantes] = useState(0);
-  const [totalDocsRequeridos, setTotalDocsRequeridos] = useState(0);
-  const [totalDocsEntregados, setTotalDocsEntregados] = useState(0);
-  const [cursos, setCursos] = useState<CursoCompleto[]>([]);
+  // 1. Obtener la fuente de datos (valores principales de otros hooks)
+  const { cursosCompleto, loading: loadingCursos, error: errorCursos } = useCurse();
+  const { documentosEntregados, documentosFiltrados, loading: loadingDocs, error: errorDocs } = useDocumentoEstudianteAll();
 
-  const { cursosCompleto } = useCurse();
-  const { documentosEntregados } = useDocumentoEstudianteAll()
+  // El estado general de carga depende de ambos
+  const loading = loadingCursos || loadingDocs;
 
-  useEffect(() => {
+  // El estado general de error es el primero que ocurra
+  const error = errorCursos || errorDocs;
 
-    async function fetchData() {
-      setLoading(true);
-      try {
-        let estudiantesCount = 0;
-        let docsCount = 0;
-        let entregadosCount=0;
-
-
-        const cursosResumen = cursosCompleto.map(curso => {
-          const totalEstudiantesCurso = curso.estudiantes?.length || 0;
-          const totalDocsCurso = (curso.documentos_requeridos?.length || 0) * totalEstudiantesCurso;
-          const totalEntregadosCurso = documentosEntregados.map(da=> da.estudiante?.curso_id===curso.id)
-
-          entregadosCount+= totalEntregadosCurso.length;
-          estudiantesCount += totalEstudiantesCurso;
-          docsCount += totalDocsCurso;
-
-          return {
-            id: curso.id,
-            nombre: curso.nombre,
-            nivel: curso.nivel,
-            activo: curso.activo,
-            totalEstudiantes: totalEstudiantesCurso,
-            totalDocsRequeridos: totalDocsCurso,
-            totalDocsEntregados: totalEntregadosCurso.length,
-          };
-        });
-
-        setTotalEstudiantes(estudiantesCount);
-        setTotalDocsRequeridos(docsCount);
-        setTotalDocsEntregados(entregadosCount);
-        setCursos(cursosResumen);
-      } catch (err: any) {
-        console.error(err);
-        setError(err.message || "Error al cargar datos del dashboard");
-      } finally {
-        setLoading(false);
-      }
+  // 2. Usar useMemo para hacer TODOS los cálculos
+  const dashboardData = useMemo(() => {
+    // Si hay error o aún está cargando, devuelve valores por defecto
+    if (loading || error) {
+      return {
+        totalEstudiantes: 0,
+        totalDocsRequeridos: 0,
+        totalDocsEntregados: 0,
+        cursos: [] as CursoCompletoResumen[],
+      };
     }
 
-    fetchData();
-  }, [cursosCompleto]);
+    let estudiantesCount = 0;
+    let docsRequeridosCount = 0;
 
+    // 🚀 Paso 1: Mapear y calcular los datos por curso
+    const cursosResumen = cursosCompleto.map(curso => {
+      const totalEstudiantesCurso = curso.estudiantes?.length || 0;
+
+      // Requeridos: (Docs por curso) * (Total de estudiantes)
+      const docsPorEstudiante = curso.documentos_requeridos?.length || 0;
+      const totalDocsCurso = docsPorEstudiante * totalEstudiantesCurso;
+
+      // Entregados: Contar cuántos documentos de la lista total pertenecen a este curso
+      // ¡Corrección Crítica! Tu lógica original de .map() no contaba bien.
+      const totalEntregadosCurso = documentosEntregados.filter(
+        doc => doc.estudiante?.curso_id === curso.id
+      ).length;
+
+
+      // Acumular totales generales
+      estudiantesCount += totalEstudiantesCurso;
+      docsRequeridosCount += totalDocsCurso;
+
+      return {
+        id: curso.id,
+        nombre: curso.nombre,
+        nivel: curso.nivel,
+        activo: curso.activo,
+        totalEstudiantes: totalEstudiantesCurso,
+        totalDocsRequeridos: totalDocsCurso,
+        totalDocsEntregados: totalEntregadosCurso,
+      };
+    });
+
+    // Sumar el total de documentos entregados de todos los cursos
+    const totalDocsEntregados = cursosResumen.reduce((sum, curso) => sum + curso.totalDocsEntregados, 0);
+
+    return {
+      totalEstudiantes: estudiantesCount,
+      totalDocsRequeridos: docsRequeridosCount,
+      totalDocsEntregados,
+      cursos: cursosResumen,
+    };
+  }, [cursosCompleto, documentosEntregados, loading, error]); // Dependencias: solo las fuentes
+
+  // 3. Devolver los resultados
   return {
     loading,
     error,
-    totalEstudiantes,
-    totalDocsRequeridos,
-    totalDocsEntregados,
-    cursos
+    // Devolvemos el objeto desestructurado
+    ...dashboardData,
+    ...documentosFiltrados
   };
 }

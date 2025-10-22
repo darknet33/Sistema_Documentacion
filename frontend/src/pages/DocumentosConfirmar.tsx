@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { LoadingScreen } from "../components";
 import { PageLayout } from "../layout/PageLayout";
 import { API_BASE_URL } from "../config/api";
-import { useDocumentoEstudianteAll } from "../hooks/useDocumentoEstudianteAll";
+import { useDocumentoEstudianteAll } from "../hooks/useDocumentoEstudianteAdmin";
 
 export default function DocumentosConfirmar() {
   const {

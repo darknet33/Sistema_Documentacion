@@ -1,24 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type { DocumentoEstudianteOut, DocumentoCombinado } from "../types/docEstudiante";
 import {
   createDocumentoEstudianteApi,
   deleteDocumentoEstudianteApi,
+  reenviarDocumentoApi,
   fetchDocumentosEstudiantesByEstudianteApi,
 } from "../api/docEstudiante";
+
 import { useDocumentosRequeridos } from "./useDocumentosRequeridos";
 
 export function useDocumentosEstudiante(estudianteId: number, cursoId: number) {
-  const { requeridos, loading: loadingReq } = useDocumentosRequeridos(cursoId);
-  const [loading, setLoading] = useState(false);
   const [documentosEstudiante, setDocumentosEstudiante] = useState<DocumentoEstudianteOut[]>([]);
+  const { requeridos } = useDocumentosRequeridos(cursoId); // se usa para la combinacion de datos
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (estudianteId) getDocumentoByIdEstudiante(estudianteId);
-  }, [estudianteId]);
-
   // 🔹 Obtener documentos de un estudiante
-  const getDocumentoByIdEstudiante = async (id: number) => {
+  const loadDocumentosRequeridos = async (id: number) => {
     setLoading(true);
     try {
       const data = await fetchDocumentosEstudiantesByEstudianteApi(id);
@@ -53,25 +51,52 @@ export function useDocumentosEstudiante(estudianteId: number, cursoId: number) {
     }
   };
 
+  // 🔁 Reenviar documento
+  const forwardDocumentoEstudiante = async (id: number, archivo: File) => {
+    try {
+      const updated = await reenviarDocumentoApi(id, archivo)
+      setDocumentosEstudiante((prev) =>
+        prev.map((doc) => (doc.id === id ? updated : doc))
+      )
+      return updated
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : 'Error al reenviar documento'
+      )
+      throw error
+    }
+  }
+
   // 🔹 Combinar con los documentos requeridos
-  const documentosCombinados: DocumentoCombinado[] = requeridos.map((req) => {
-    const entregado = documentosEstudiante.find(
-      (doc) => doc.catalogo_documento_id === req.catalogo_documento_id
-    );
-    return {
-      ...req,
-      entregado: !!entregado,
-      documento: entregado || null,
-    };
-  });
+  const documentosRequeridosPorEstudiante: DocumentoCombinado[] = useMemo(() => {
+    if (!requeridos || !documentosEstudiante) return [];
+    // 🚀 La lógica de combinación
+    return requeridos.map((req) => {
+      const entregado = documentosEstudiante.find(
+        (doc) => doc.catalogo_documento_id === req.catalogo_documento_id
+      );
+      return {
+        ...req,
+        // Convertir el resultado de find a booleano de forma concisa
+        entregado: !!entregado,
+        // Si no se encuentra, es null.
+        documento: entregado || null,
+      };
+    });
+  }, [requeridos, documentosEstudiante])
+
+  useEffect(() => {
+    if (estudianteId) loadDocumentosRequeridos(estudianteId);
+  }, [estudianteId]);
 
   return {
     documentosEstudiante,
-    documentosCombinados,
-    loading: loading || loadingReq,
+    documentosRequeridosPorEstudiante,
+    loading,
     error,
-    getDocumentoByIdEstudiante,
+    reload: loadDocumentosRequeridos,
     createDocumentoEstudiante,
     deleteDocumentoEstudiante,
+    forwardDocumentoEstudiante
   };
 }

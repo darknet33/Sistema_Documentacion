@@ -2,12 +2,28 @@ import { useDashboardData } from "../../hooks/useDashboardData";
 import { LoadingScreen } from "./LoadingScreen";
 
 export function DashboardAdmin() {
-    const { loading, totalEstudiantes, totalDocsRequeridos, totalDocsEntregados, cursos, error } = useDashboardData();
+    // 1. Desestructuramos los nuevos datos del hook: documentosPorConfirmar, documentosAprobados, documentosPorVencer
+    const { 
+        loading, 
+        totalEstudiantes, 
+        totalDocsRequeridos, 
+        totalDocsEntregados, 
+        cursos, 
+        error,
+        documentosPorConfirmar, // ⬅️ Nuevos datos
+        documentosAprobados,    // ⬅️ Nuevos datos
+        documentosPorVencer,    // ⬅️ Nuevos datos
+    } = useDashboardData();
 
     // Calcular porcentaje de entrega
     const porcentajeEntrega = totalDocsRequeridos > 0 
         ? Math.round((totalDocsEntregados / totalDocsRequeridos) * 100)
         : 0;
+
+    // Métricas de estado (se calculan la longitud aquí, no en el hook)
+    const totalPorConfirmar = documentosPorConfirmar?.length || 0;
+    const totalAprobados = documentosAprobados?.length || 0;
+    const totalPorVencer = documentosPorVencer?.length || 0;
 
     if (loading) return <LoadingScreen message="Cargando Datos del Dashboard" />;
     if (error) return (
@@ -82,7 +98,51 @@ export function DashboardAdmin() {
                     </div>
                 </div>
 
-                {/* Resumen por cursos */}
+                {/* --- NUEVA SECCIÓN: DOCUMENTOS POR ESTADO --- */}
+                <h2 className="text-2xl font-bold text-gray-900 mb-4 mt-8">
+                    Gestión de Documentos
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    {/* Tarjeta Por Confirmar */}
+                    <div className="bg-orange-50 rounded-2xl shadow-sm border border-orange-200 p-6">
+                        <div className="flex items-center justify-between">
+                            <div className="text-orange-600 text-4xl mr-4">🔔</div>
+                            <div>
+                                <p className="text-sm text-gray-600 font-medium">Por Confirmar</p>
+                                <p className="text-3xl font-bold text-gray-900">{totalPorConfirmar}</p>
+                                <p className="text-xs text-orange-500 mt-1">Requiere tu revisión.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {/* Tarjeta Aprobados */}
+                    <div className="bg-lime-50 rounded-2xl shadow-sm border border-lime-200 p-6">
+                        <div className="flex items-center justify-between">
+                            <div className="text-lime-600 text-4xl mr-4">👍</div>
+                            <div>
+                                <p className="text-sm text-gray-600 font-medium">Documentos Aprobados</p>
+                                <p className="text-3xl font-bold text-gray-900">{totalAprobados}</p>
+                                <p className="text-xs text-lime-500 mt-1">Documentación verificada.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Tarjeta Por Vencer */}
+                    <div className="bg-red-50 rounded-2xl shadow-sm border border-red-200 p-6">
+                        <div className="flex items-center justify-between">
+                            <div className="text-red-600 text-4xl mr-4">⚠️</div>
+                            <div>
+                                <p className="text-sm text-gray-600 font-medium">Por Vencer / Vencidos</p>
+                                <p className="text-3xl font-bold text-gray-900">{totalPorVencer}</p>
+                                <p className="text-xs text-red-500 mt-1">Atención inmediata requerida.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {/* --- FIN NUEVA SECCIÓN --- */}
+
+
+                {/* Resumen por cursos (mantenemos la sección original) */}
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                     <div className="px-6 py-4 border-b border-gray-200">
                         <h2 className="text-xl font-semibold text-gray-900">Resumen por Curso</h2>
@@ -164,7 +224,7 @@ export function DashboardAdmin() {
                     </div>
                 </div>
 
-                {/* Métricas adicionales */}
+                {/* Métricas adicionales (mantemos la sección original) */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                     <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-6 text-white">
                         <div className="flex items-center justify-between">
@@ -173,8 +233,8 @@ export function DashboardAdmin() {
                                 <p className="text-2xl font-bold mt-1">{porcentajeEntrega}%</p>
                                 <p className="text-indigo-200 text-sm mt-2">
                                     {porcentajeEntrega >= 80 ? 'Excelente rendimiento' :
-                                     porcentajeEntrega >= 60 ? 'Buen progreso' :
-                                     'Necesita mejora'}
+                                       porcentajeEntrega >= 60 ? 'Buen progreso' :
+                                       'Necesita mejora'}
                                 </p>
                             </div>
                             <div className="text-4xl">🎯</div>

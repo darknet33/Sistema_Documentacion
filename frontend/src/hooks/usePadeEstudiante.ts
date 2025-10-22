@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type {
   PadresEstudiantesOut,
   PadresEstudiantesCreate,
@@ -16,7 +16,6 @@ import {
 
 export const usePadreEstudiante = (perfilId?: number) => {
   const [relaciones, setRelaciones] = useState<PadresEstudiantesOut[]>([]);
-  const [pendientes, setPendientes] = useState<PadresEstudiantesOut[]>([])
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,13 +27,18 @@ export const usePadreEstudiante = (perfilId?: number) => {
         ? await fetchPadresEstudiantesByPerfilApi(perfilId)
         : await fetchPadresEstudiantesApi();
       setRelaciones(data);
-      setPendientes(data.filter((r) => r.observacion === "Solicitado" && !r.estado));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error desconocido");
     } finally {
       setLoading(false);
     }
   };
+
+  const pendientes: PadresEstudiantesOut[] = useMemo(()=>{
+    if (loading || error ) return []
+
+    return relaciones.filter((r) => r.observacion === "Solicitado" && !r.estado);
+  },[relaciones])
 
   // 🔹 Crear nueva relación
   const addRelacion = async (rel: PadresEstudiantesCreate) => {

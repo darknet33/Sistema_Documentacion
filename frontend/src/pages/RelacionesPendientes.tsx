@@ -1,23 +1,20 @@
 import { PadresEstudiantesTable } from "../components";
 import { PageLayout } from "../layout/PageLayout";
-import { usePadreEstudiante } from "../hooks/usePadeEstudiante";
 import { useState } from "react";
 import { useNotification } from "../context/NotificationContext";
+import { usePadreEstudiante } from "../context/PadreEstudianteContext";
 
 export default function RelacionesPendientes() {
-  const { relaciones, loading, aceptarRelacion, rechazarRelacion, reload } = usePadreEstudiante();
+  const { pendientes, loading, aceptarRelacion, rechazarRelacion } = usePadreEstudiante();
   const { setNotification } = useNotification();
 
   const [observacion, setObservacion] = useState("");
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  const pendientes = relaciones.filter((r) => r.observacion === "Solicitado" && !r.estado);
-
   const handleAceptar = async (id: number) => {
     try {
       await aceptarRelacion(id);
       setNotification({ message: "Relación aceptada correctamente.", type: "success" });
-      reload();
     } catch (err: any) {
       console.error("Error al aceptar relación:", err);
       setNotification({ message: err?.message || "Error al aceptar la relación.", type: "error" });
@@ -30,7 +27,6 @@ export default function RelacionesPendientes() {
       setSelectedId(null);
       setObservacion("");
       setNotification({ message: "Relación rechazada correctamente.", type: "success" });
-      reload();
     } catch (err: any) {
       console.error("Error al rechazar relación:", err);
       setNotification({ message: err?.message || "Error al rechazar la relación.", type: "error" });

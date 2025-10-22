@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
 import { useDocumentosRequeridos } from "../../hooks/useDocumentosRequeridos";
-import { fetchDocumentsApi } from "../../api/document";
-import type { DocumentOut } from "../../types/document";
 import type { CurseOut } from "../../types/curse";
+import { useDocument } from "../../hooks/useDocuments";
 
 interface Props {
   curse: CurseOut;
@@ -11,11 +9,7 @@ interface Props {
 
 export function DocumentosRequeridosPanel({ curse, onClose }: Props) {
   const { requeridos, toggleRequerido } = useDocumentosRequeridos(curse.id);
-  const [documentos, setDocumentos] = useState<DocumentOut[]>([]);
-
-  useEffect(() => {
-    fetchDocumentsApi().then(setDocumentos);
-  }, []);
+  const { documents } = useDocument();
 
   const isRequerido = (docId: number) =>
     requeridos.some((r) => r.catalogo_documento_id === docId);
@@ -46,8 +40,8 @@ export function DocumentosRequeridosPanel({ curse, onClose }: Props) {
           </thead>
 
           <tbody className="bg-white divide-y divide-gray-200">
-            {documentos.map((doc) => {
-              const requerido = isRequerido(doc.id);
+            {documents?.map((doc) => {
+              const requerido = isRequerido(doc.id); // evalua con la funcion isRequerido
               return (
                 <tr
                   key={doc.id}
