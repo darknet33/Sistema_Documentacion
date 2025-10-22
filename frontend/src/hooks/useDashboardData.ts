@@ -1,7 +1,7 @@
 // src/hooks/useDashboardData.ts
 import { useMemo } from "react"; // 💡 Solo necesitamos useMemo
 import { useCurse } from "./useCurse";
-import { useDocumentoEstudianteAll } from "./useDocumentoEstudianteAdmin";
+import { useDocumentoEstudiante } from "../context/DocumentoEstudianteContext";
 
 // Define la estructura de tu valor derivado
 interface CursoCompletoResumen {
@@ -19,7 +19,7 @@ interface CursoCompletoResumen {
 export function useDashboardData() {
   // 1. Obtener la fuente de datos (valores principales de otros hooks)
   const { cursosCompleto, loading: loadingCursos, error: errorCursos } = useCurse();
-  const { documentosEntregados, documentosFiltrados, loading: loadingDocs, error: errorDocs } = useDocumentoEstudianteAll();
+  const { documentosEntregados, documentosFiltrados, loading: loadingDocs, error: errorDocs } = useDocumentoEstudiante();
 
   // El estado general de carga depende de ambos
   const loading = loadingCursos || loadingDocs;

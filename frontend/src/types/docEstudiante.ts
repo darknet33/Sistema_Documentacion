@@ -35,3 +35,18 @@ export interface DocumentoCombinado extends DocumentoRequeridoOut {
   entregado: boolean;
   documento?: DocumentoEstudianteOut | null;
 }
+
+export interface DocEstudianteContextType {
+    documentosEntregados: DocumentoEstudianteOut[];
+    documentosFiltrados: {
+        documentosPorConfirmar: DocumentoEstudianteOut[];
+        documentosAprobados: DocumentoEstudianteOut[];
+        documentosPorVencer: DocumentoEstudianteOut[];
+    };
+    aprobarDocumento: (id: number, fechaVencimiento?: string) => Promise<DocumentoEstudianteOut>;
+    rechazarDocumento: (id: number, observacion: string) => Promise<DocumentoEstudianteOut>;
+    notificarDocumentoVencido: (id: number, observacion: string) => Promise<DocumentoEstudianteOut>;
+    reload: () => Promise<void>;
+    loading: boolean;
+    error: string | null;
+}

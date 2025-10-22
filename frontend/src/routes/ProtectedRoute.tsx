@@ -2,6 +2,7 @@
 import React, { type ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { PadreEstudianteProvider } from '../context/PadreEstudianteContext';
+import { DocumentoEstudianteProvider } from '../context/DocumentoEstudianteContext';
 
 interface ProtectedRouteProps {
     isAuthenticated: boolean;
@@ -15,8 +16,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ isAuthenticated, redire
     }
 
     return (
-        <PadreEstudianteProvider>
-            {children}
+        <PadreEstudianteProvider> 
+             <DocumentoEstudianteProvider>
+                {children}
+            </DocumentoEstudianteProvider>
         </PadreEstudianteProvider>
     )
 

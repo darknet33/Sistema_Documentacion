@@ -2,8 +2,8 @@ import { type UserOut } from "../types/users";
 import { LayoutDashboard, Users, School, GraduationCap, File, Link2, FileCheck2, FileDigit, FileInput } from "lucide-react";
 import { useNavigate } from "react-router-dom"; // Ya no necesitamos useEffect
 import { usePadreEstudiante } from "../context/PadreEstudianteContext";
-import { useDocumentoEstudianteAll } from "./useDocumentoEstudianteAdmin";
 import { type JSX } from "react"; // Mover type JSX
+import { useDocumentoEstudiante } from "../context/DocumentoEstudianteContext";
 
 export interface MenuItem {
     label: string;
@@ -17,7 +17,7 @@ export const useMenu = (userData: UserOut): MenuItem[] => {
     
     // Solo desestructuramos los datos que necesitamos (pendientes y documentosFiltrados)
     const { pendientes } = usePadreEstudiante();
-    const { documentosFiltrados } = useDocumentoEstudianteAll();
+    const { documentosFiltrados } = useDocumentoEstudiante();
 
     // 🧠 Helper para crear ítems de menú
     const createItem = (label: string, icon: JSX.Element, path: string): MenuItem => ({
