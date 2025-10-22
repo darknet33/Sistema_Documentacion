@@ -1,6 +1,7 @@
 // src/routes/ProtectedRoute.tsx
 import React, { type ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
+import { PadreEstudianteProvider } from '../context/PadreEstudianteContext';
 
 interface ProtectedRouteProps {
     isAuthenticated: boolean;
@@ -13,7 +14,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ isAuthenticated, redire
         return <Navigate to={redirectPath} replace />;
     }
 
-    return <>{children}</>; // renderiza los hijos
+    return (
+        <PadreEstudianteProvider>
+            {children}
+        </PadreEstudianteProvider>
+    )
+
 };
 
 export default ProtectedRoute;

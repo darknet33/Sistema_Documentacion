@@ -4,10 +4,10 @@ import { loginApi, logoutApi, getProfileApi } from "../api/auth";
 import type { UserOut } from "../types/users";
 import type { AuthContextType, LoginSuccess } from "../types/auths";
 
-export const useAuth = () : AuthContextType => {
+export const useAuth = (): AuthContextType => {
   const [user, setUser] = useState<UserOut | null>(null);
   const [token, setToken] = useState<string | null>(localStorage.getItem(ACCESS_TOKEN_KEY));
-  
+
   const loadUser = async () => {
     if (token) {
       try {
@@ -18,17 +18,17 @@ export const useAuth = () : AuthContextType => {
       }
     }
   };
-  
-  const login = async (email: string, password: string ) => {
+
+  const login = async (email: string, password: string) => {
     const res: LoginSuccess = await loginApi(email, password);
-      localStorage.setItem(ACCESS_TOKEN_KEY, res.access_token);
-      localStorage.setItem(REFRESH_TOKEN_KEY, res.refresh_token);
-      setToken(res.access_token);
+    localStorage.setItem(ACCESS_TOKEN_KEY, res.access_token);
+    localStorage.setItem(REFRESH_TOKEN_KEY, res.refresh_token);
+    setToken(res.access_token);
 
-      const userData = await getProfileApi(res.access_token);
-      setUser(userData);
+    const userData = await getProfileApi(res.access_token);
+    setUser(userData);
 
-      return res
+    return res
   };
 
   const logout = async () => {
@@ -37,10 +37,10 @@ export const useAuth = () : AuthContextType => {
     setUser(null);
     setToken(null);
   };
-  
+
   useEffect(() => {
     loadUser();
   }, [token]);
-  
+
   return { user, token, login, logout, isAuthenticated: !!token };
 };
