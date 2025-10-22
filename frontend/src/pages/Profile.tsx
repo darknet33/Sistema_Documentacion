@@ -48,10 +48,6 @@ function Profile() {
 
     const handleCancel = () => {
         setShowForm(false);
-        setNotification({
-            message: "Edición de perfil cancelada.",
-            type: "success",
-        });
     };
 
     return (

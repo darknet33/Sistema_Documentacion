@@ -1,121 +1,255 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
 import type { ProfileOut, UpdateProfile } from "../../types/profile";
+import { capitalizeWords } from "../../helpers/funcionesGenerales";
 
 interface ProfileFormProps {
     profile: ProfileOut;
     onSubmit: (updatedProfile: UpdateProfile) => void;
     onCancel?: () => void;
+    loading?: boolean;
 }
 
-export function ProfileForm({ profile, onSubmit, onCancel }: ProfileFormProps) {
-    const [formData, setFormData] = useState<ProfileOut>(profile);
+interface FormData {
+    cedula_identidad: string;
+    nombres: string;
+    apellidos: string;
+    telefono: string;
+}
 
-    useEffect(() => {
-        if (profile) {
-            setFormData(profile);
+export function ProfileForm({ profile, onSubmit, onCancel, loading = false }: ProfileFormProps) {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isDirty },
+        setValue,
+    } = useForm<FormData>({
+        defaultValues: {
+            cedula_identidad: profile.cedula_identidad || "",
+            nombres: profile.nombres || "",
+            apellidos: profile.apellidos || "",
+            telefono: profile.telefono || "",
         }
-    }, [profile]);
+    });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+    const handleFormSubmit = (data: FormData) => {
+        const formattedData: UpdateProfile = {
+            cedula_identidad: data.cedula_identidad,
+            nombres: capitalizeWords(data.nombres),
+            apellidos: capitalizeWords(data.apellidos),
+            telefono: data.telefono,
+        };
+        onSubmit(formattedData);
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        onSubmit(formData);
+    // Auto-capitalizar nombres y apellidos en tiempo real
+    const handleCapitalize = (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (field === 'nombres' || field === 'apellidos') {
+            setValue(field, capitalizeWords(value), { shouldDirty: true });
+        }
     };
 
     return (
         <form
-            onSubmit={handleSubmit}
-            className="bg-white rounded-2xl shadow-md p-6 border border-gray-100 w-full max-w-md"
+            onSubmit={handleSubmit(handleFormSubmit)}
+            className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 w-full max-w-md"
         >
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                Editar Perfil
-            </h2>
+            {/* Header */}
+            <div className="mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <span className="w-2 h-8 bg-indigo-500 rounded-full"></span>
+                    Editar Perfil
+                </h2>
+                <p className="text-gray-600 text-sm mt-2">
+                    Actualiza tu información personal
+                </p>
+            </div>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
+                {/* Cédula de Identidad */}
                 <div>
-                    <label className="block text-gray-700 font-medium mb-1" htmlFor="cedula_identidad">
-                        Cedula de Identidad
+                    <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="cedula_identidad">
+                        Cédula de Identidad *
                     </label>
                     <input
                         id="cedula_identidad"
-                        name="cedula_identidad"
                         type="text"
-                        value={formData.cedula_identidad}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
-                        required
+                        className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors duration-200 ${
+                            errors.cedula_identidad 
+                                ? 'border-red-300 bg-red-50' 
+                                : 'border-gray-300 hover:border-gray-400'
+                        }`}
+                        placeholder="Ingresa tu cédula de identidad"
+                        {...register("cedula_identidad", {
+                            required: "La cédula de identidad es obligatoria",
+                            pattern: {
+                                value: /^[0-9]+$/,
+                                message: "La cédula debe contener solo números"
+                            },
+                            minLength: {
+                                value: 7,
+                                message: "La cédula debe tener al menos 5 dígitos"
+                            },
+                            maxLength: {
+                                value: 8,
+                                message: "La cédula debe tener al menos 5 dígitos"
+                            }
+                        })}
                     />
+                    {errors.cedula_identidad && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                            <span>⚠️</span>
+                            {errors.cedula_identidad.message}
+                        </p>
+                    )}
                 </div>
+
+                {/* Nombres */}
                 <div>
-                    <label className="block text-gray-700 font-medium mb-1" htmlFor="nombres">
-                        Nombres
+                    <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="nombres">
+                        Nombres *
                     </label>
                     <input
                         id="nombres"
-                        name="nombres"
                         type="text"
-                        value={formData.nombres}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
-                        required
+                        className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors duration-200 ${
+                            errors.nombres 
+                                ? 'border-red-300 bg-red-50' 
+                                : 'border-gray-300 hover:border-gray-400'
+                        }`}
+                        placeholder="Ingresa tus nombres"
+                        {...register("nombres", {
+                            required: "Los nombres son obligatorios",
+                            minLength: {
+                                value: 2,
+                                message: "Los nombres deben tener al menos 2 caracteres"
+                            },
+                            pattern: {
+                                value: /^[A-Za-zÁáÉéÍíÓóÚúÑñ\s]+$/,
+                                message: "Solo se permiten letras y espacios"
+                            }
+                        })}
+                        onBlur={handleCapitalize('nombres')}
                     />
+                    {errors.nombres && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                            <span>⚠️</span>
+                            {errors.nombres.message}
+                        </p>
+                    )}
                 </div>
 
+                {/* Apellidos */}
                 <div>
-                    <label className="block text-gray-700 font-medium mb-1" htmlFor="apellidos">
-                        Apellidos
+                    <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="apellidos">
+                        Apellidos *
                     </label>
                     <input
                         id="apellidos"
-                        name="apellidos"
                         type="text"
-                        value={formData.apellidos}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
-                        required
+                        className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors duration-200 ${
+                            errors.apellidos 
+                                ? 'border-red-300 bg-red-50' 
+                                : 'border-gray-300 hover:border-gray-400'
+                        }`}
+                        placeholder="Ingresa tus apellidos"
+                        {...register("apellidos", {
+                            required: "Los apellidos son obligatorios",
+                            minLength: {
+                                value: 2,
+                                message: "Los apellidos deben tener al menos 2 caracteres"
+                            },
+                            pattern: {
+                                value: /^[A-Za-zÁáÉéÍíÓóÚúÑñ\s]+$/,
+                                message: "Solo se permiten letras y espacios"
+                            }
+                        })}
+                        onBlur={handleCapitalize('apellidos')}
                     />
+                    {errors.apellidos && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                            <span>⚠️</span>
+                            {errors.apellidos.message}
+                        </p>
+                    )}
                 </div>
 
+                {/* Teléfono */}
                 <div>
-                    <label className="block text-gray-700 font-medium mb-1" htmlFor="telefono">
-                        Teléfono
+                    <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="telefono">
+                        Teléfono *
                     </label>
                     <input
                         id="telefono"
-                        name="telefono"
-                        type="text"
-                        value={formData.telefono || ""}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
+                        type="tel"
+                        className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors duration-200 ${
+                            errors.telefono 
+                                ? 'border-red-300 bg-red-50' 
+                                : 'border-gray-300 hover:border-gray-400'
+                        }`}
+                        placeholder="Ingresa tu número de teléfono"
+                        {...register("telefono", {
+                            required: "El teléfono es obligatorio",
+                            pattern: {
+                                value: /^[0-9+-\s()]+$/,
+                                message: "Formato de teléfono inválido"
+                            },
+                            minLength: {
+                                value: 6,
+                                message: "El teléfono debe tener al menos 6 dígitos"
+                            }
+                        })}
                     />
+                    {errors.telefono && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                            <span>⚠️</span>
+                            {errors.telefono.message}
+                        </p>
+                    )}
                 </div>
             </div>
 
-            <div className="flex justify-end space-x-3 mt-6">
+            {/* Footer con botones */}
+            <div className="flex justify-end space-x-3 mt-8 pt-6 border-t border-gray-200">
                 {onCancel && (
                     <button
                         type="button"
                         onClick={onCancel}
-                        className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium transition cursor-pointer"
+                        disabled={loading}
+                        className="px-6 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300"
                     >
                         Cancelar
                     </button>
                 )}
                 <button
                     type="submit"
-                    className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium transition cursor-pointer"
+                    disabled={!isDirty || loading}
+                    className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-medium transition-all duration-200 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm hover:shadow-md"
                 >
-                    Guardar
+                    {loading ? (
+                        <>
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            Guardando...
+                        </>
+                    ) : (
+                        <>
+                            <span>💾</span>
+                            Guardar Cambios
+                        </>
+                    )}
                 </button>
             </div>
+
+            {/* Indicador de cambios */}
+            {!isDirty && (
+                <div className="mt-4 text-center">
+                    <p className="text-sm text-gray-500 flex items-center justify-center gap-1">
+                        <span>💡</span>
+                        Realiza cambios para habilitar el guardado
+                    </p>
+                </div>
+            )}
         </form>
     );
 }

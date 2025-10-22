@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import type { EstudianteFormProps, NewEstudiante, UpdateEstudiante } from "../../types/estudiante";
 import { ArrowLeft } from "lucide-react";
 import { useCurse } from "../../hooks/useCurse";
-import { capitalizeWords } from "../../helpers/capitalizeWords"
+import { capitalizeWords } from "../../helpers/funcionesGenerales"
 
 export function EstudianteForm({ estudiante, loading = false, error, onSubmit, onCancel }: EstudianteFormProps) {
   const [cedulaIdentidad, setCedulaIdentidad] = useState("");

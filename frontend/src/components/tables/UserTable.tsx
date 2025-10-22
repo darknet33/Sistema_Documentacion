@@ -1,5 +1,6 @@
+import { tipoUsuario } from '../../helpers/funcionesGenerales';
 import { type UserTableProps } from '../../types/users';
-import { tipoUsuario } from '../ui/UserInfo';
+
 export function UserTable({ users, onEdit, onToggle, onDelete }: UserTableProps) {
   return (
     <div>
@@ -25,7 +26,7 @@ export function UserTable({ users, onEdit, onToggle, onDelete }: UserTableProps)
                 </td>
                 <td className="px-4 py-2">{user.email}</td>
                 <td className="px-4 py-2">{user.perfil?.telefono || '—'}</td>
-                <td className="px-4 py-2">{tipoUsuario(user.tipo_usuario)}</td>
+                <td className={`px-4 py-2 ${tipoUsuario(user.tipo_usuario).color}`}>{tipoUsuario(user.tipo_usuario).label}</td>
 
                 {/* Toggle de activación */}
                 <td className="px-4 py-2 text-center">
@@ -60,7 +61,7 @@ export function UserTable({ users, onEdit, onToggle, onDelete }: UserTableProps)
             </p>
             <p>Email: {user.email}</p>
             <p>Teléfono: {user.perfil?.telefono || '—'}</p>
-            <p>Tipo: {tipoUsuario(user.tipo_usuario)}</p>
+            <p className={`${tipoUsuario(user.tipo_usuario).color}`}>{tipoUsuario(user.tipo_usuario).label}</p>
             <p>
               Activo:
               <input

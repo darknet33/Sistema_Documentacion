@@ -185,13 +185,9 @@ export function DashboardAdmin() {
     return (
         <div className="min-h-screen bg-gray-50 p-6">
             {/* Header */}
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard Administrativo</h1>
-                <p className="text-gray-600">
-                    Resumen general de estudiantes y documentos del sistema
-                </p>
-            </div>
-
+            <p className="text-gray-600">
+                Resumen general de estudiantes y documentos del sistema
+            </p>
             {/* Tarjetas de métricas principales */}
             <div className="flex justify-between gap-6">
                 <CardMetrica path="/cursos">
