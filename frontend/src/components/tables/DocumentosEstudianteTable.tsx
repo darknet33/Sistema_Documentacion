@@ -5,12 +5,13 @@ interface Props {
   documentos: DocumentoCombinado[];
   onEntregar: (docId: number) => void;
   onDelete: (docId: number) => void;
+  onReenviar: (id: number) => void;
 }
 
 function tdBoolean(value: boolean) {
   return (
     <td className="p-2 border-b text-center">
-      {value ? (
+      {value === true || value ? (
         <span className="text-green-600 font-semibold">Sí</span>
       ) : (
         <span className="text-red-600 font-semibold">No</span>
@@ -19,8 +20,7 @@ function tdBoolean(value: boolean) {
   );
 }
 
-
-export function DocumentosEstudianteTable({ documentos, onEntregar, onDelete }: Props) {
+export function DocumentosEstudianteTable({ documentos, onEntregar, onDelete, onReenviar }: Props) {
   return (
     <>
       {/* Tabla para pantallas grandes */}
@@ -31,11 +31,11 @@ export function DocumentosEstudianteTable({ documentos, onEntregar, onDelete }: 
             <th className="p-2 border-b text-left">Descripción</th>
             <th className="p-2 border-b text-center">Obligatorio</th>
             <th className="p-2 border-b text-center text-red-400">Fecha límite</th>
-            <th className="p-2 border-b text-center">Entregado</th>
+            <th className="p-2 border-b text-center">Verificado</th>
             <th className="p-2 border-b text-center text-indigo-600">Fecha de entrega</th>
             <th className="p-2 border-b text-center">Fecha de vencimiento</th>
             <th className="p-2 border-b text-center">Observaciones</th>
-            <th className="p-2 border-b text-center">Estado</th>
+            <th className="p-2 border-b text-center">Vencido?</th>
             <th className="p-2 border-b text-center">Acción</th>
           </tr>
         </thead>
@@ -53,17 +53,49 @@ export function DocumentosEstudianteTable({ documentos, onEntregar, onDelete }: 
               <td className="p-2 border-b text-center">{doc.documento?.estadoVencimiento || "-"}</td>
               <td className="p-2 border-b text-center">
                 <div className="flex justify-center gap-2 flex-wrap">
-                  {doc.documento?.archivo_digital && (
-                    <a href={`${API_BASE_URL}${doc.documento.archivo_digital}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Ver documento</a>
-                  )}
-                  {doc.entregado ? (
-                    doc.documento?.observaciones !== "Recepcionado y Verificado" ? (
-                      <button onClick={() => doc.documento?.id && onDelete(doc.documento.id)} className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">Borrar entrega</button>
-                    ) : (
-                      <button onClick={() => onEntregar(doc.catalogo_documento_id)} className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">Reenviar</button>
-                    )
+                  {/* 1. Verificar si existe un archivo digital (doc.documento?.archivo_digital tiene contenido) */}
+                  {doc.documento?.archivo_digital ? (
+                    // RAMA 1: Sí hay archivo entregado
+                    <div className="flex flex-col gap-2">
+                      <a
+                        href={`${API_BASE_URL}${doc.documento.archivo_digital}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-center" // Mejor estética
+                      >
+                        Ver Documento
+                      </a>
+
+                      {/* 2. Botón Borrar: Usamos `doc.documento.id` ya que la existencia de `archivo_digital`
+          implica la existencia del `documento` y su `id`. */}
+                      <button
+                        onClick={() => onDelete(doc.documento!.id)} // Usamos ! para afirmar la existencia si el ternario pasa
+                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                      >
+                        Borrar Entrega
+                      </button>
+                    </div>
                   ) : (
-                    <button onClick={() => onEntregar(doc.catalogo_documento_id)} className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Entregar</button>
+                    // RAMA 2: No hay archivo entregado (el archivo_digital es "", null, o undefined)
+                    // Mostramos Entregar o Reenviar, basado en si hay una observación de rechazo.
+
+                    // Si la OBSERVACIÓN está VACÍA, asumimos que nunca se ha entregado o fue borrado.
+                    doc.documento?.observaciones === "" || !doc.documento ? (
+                      <button
+                        onClick={() => onEntregar(doc.catalogo_documento_id)}
+                        className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                      >
+                        Entregar
+                      </button>
+                    ) : (
+                      // Si hay OBSERVACIÓN (ej: "Rechazado"), mostramos Reenviar.
+                      <button
+                        onClick={() => doc.documento?.id && onReenviar(doc.documento.id)}
+                        className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                      >
+                        Reenviar
+                      </button>
+                    )
                   )}
                 </div>
               </td>
@@ -93,7 +125,7 @@ export function DocumentosEstudianteTable({ documentos, onEntregar, onDelete }: 
                 doc.documento?.observaciones !== "Recepcionado y Verificado" ? (
                   <button onClick={() => doc.documento?.id && onDelete(doc.documento.id)} className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">Borrar entrega</button>
                 ) : (
-                  <button onClick={() => onEntregar(doc.catalogo_documento_id)} className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">Reenviar</button>
+                  <button onClick={() => doc.documento?.id && onReenviar(doc.documento.id)} className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">Reenviar</button>
                 )
               ) : (
                 <button onClick={() => onEntregar(doc.catalogo_documento_id)} className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Entregar</button>

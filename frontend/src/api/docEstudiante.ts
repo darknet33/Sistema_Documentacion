@@ -72,6 +72,20 @@ export const deleteDocumentoEstudianteApi = async (
   });
 };
 
+// 🔁 Reenviar documento
+export const reenviarDocumentoApi = async (
+  id: number,
+  archivo: File
+): Promise<DocumentoEstudianteOut> => {
+  const formData = new FormData();
+  formData.append("archivo", archivo);
+
+  return authFetch(`/documentos_estudiante/reenviar/${id}`, {
+    method: "PATCH",
+    body: formData,
+  });
+};
+
 // ✅ Aprobar documento
 export const aprobarDocumentoApi = async (
   id: number,
@@ -99,16 +113,3 @@ export const rechazarDocumentoApi = async (
   });
 };
 
-// 🔁 Reenviar documento
-export const reenviarDocumentoApi = async (
-  id: number,
-  archivo: File
-): Promise<DocumentoEstudianteOut> => {
-  const formData = new FormData();
-  formData.append("archivo", archivo);
-
-  return authFetch(`/documentos_estudiante/reenviar/${id}`, {
-    method: "PATCH",
-    body: formData,
-  });
-};

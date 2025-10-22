@@ -1,6 +1,6 @@
 // src/pages/Users.tsx
 import { useState } from 'react';
-import { CurseTable, CurseForm, LoadingScreen, DocumentosRequeridosPanel } from '../components';
+import { CurseTable, CurseForm, LoadingScreen, DocumentosRequeridosPanel, Modal } from '../components';
 import { useCurse } from '../hooks/useCurse';
 import type { CurseOut, NewCurse, UpdateCurse } from '../types/curse';
 import { PageLayout } from '../layout/PageLayout';
@@ -8,11 +8,13 @@ import { useNotification } from '../context/NotificationContext';
 
 const Curse = () => {
   const { curser, loading, error, addCurse, updateCurse, toggleStatus, deleteCurse } = useCurse();
-  const [showForm, setShowForm] = useState(false);
-  const [editCurse, setEditCurse] = useState<CurseOut | null>(null);
   const { setNotification } = useNotification();
+
+  const [showForm, setShowForm] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  
+  const [editCurse, setEditCurse] = useState<CurseOut | null>(null);
   const [selectedCourse, setSelectedCourse] = useState<CurseOut | null>(null);
-  const [showDocuments, setShowDocuments] = useState(false)
 
   const handleCreate = () => {
     setEditCurse(null);
@@ -26,8 +28,9 @@ const Curse = () => {
 
   const handleViewDocuments = (curso: CurseOut) => {
     setSelectedCourse(curso);
-    setShowDocuments(true);
+    setShowModal(true);
   };
+
   const handleSubmit = async (data: NewCurse | UpdateCurse) => {
     try {
       if (editCurse) {
@@ -124,8 +127,14 @@ const Curse = () => {
         </>
       )}
 
-      {showDocuments && selectedCourse && (
-        <DocumentosRequeridosPanel curse={selectedCourse} onClose={() => setShowDocuments(false)} />
+      {/* Modal con Documentos del Estudiante */}
+      {showModal && selectedCourse && (
+        <Modal
+          onClose={() => setShowModal(false)}
+          title={`Documentos requeridos Curso: ${selectedCourse.nombre} ${selectedCourse.nivel}`}
+        >
+          <DocumentosRequeridosPanel curse={selectedCourse} />
+        </Modal>
       )}
     </PageLayout>
   );

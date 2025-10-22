@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import type { EstudianteFormProps, NewEstudiante, UpdateEstudiante } from "../../types/estudiante";
 import { ArrowLeft } from "lucide-react";
 import { useCurse } from "../../hooks/useCurse";
+import { capitalizeWords } from "../../helpers/capitalizeWords"
 
 export function EstudianteForm({ estudiante, loading = false, error, onSubmit, onCancel }: EstudianteFormProps) {
-  const [codigo, setCodigo] = useState("");
+  const [cedulaIdentidad, setCedulaIdentidad] = useState("");
   const [nombres, setNombres] = useState("");
   const [apellidos, setApellidos] = useState("");
   const [fechaNacimiento, setFechaNacimiento] = useState("");
@@ -15,7 +16,7 @@ export function EstudianteForm({ estudiante, loading = false, error, onSubmit, o
 
   useEffect(() => {
     if (estudiante) {
-      setCodigo(estudiante.cedula_identidad);
+      setCedulaIdentidad(estudiante.cedula_identidad);
       setNombres(estudiante.nombres);
       setApellidos(estudiante.apellidos);
       setFechaNacimiento(estudiante.fecha_nacimiento);
@@ -31,24 +32,17 @@ export function EstudianteForm({ estudiante, loading = false, error, onSubmit, o
     ? curser.filter(c => c.nivel === nivelFiltro)
     : curser;
 
-  // Función para convertir a formato nombre propio
-  const capitalizeWords = (str: string) =>
-    str
-      .toLowerCase()
-      .split(" ")
-      .filter(Boolean)
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!codigo || !nombres || !apellidos || !fechaNacimiento || !cursoId) {
+    if (!cedulaIdentidad || !nombres || !apellidos || !fechaNacimiento || !cursoId) {
       alert("Por favor completa todos los campos obligatorios.");
       return;
     }
 
     const data: NewEstudiante | UpdateEstudiante = {
-      cedula_identidad: codigo,
+      cedula_identidad: cedulaIdentidad,
       nombres: capitalizeWords(nombres),
       apellidos: capitalizeWords(apellidos),
       fecha_nacimiento: fechaNacimiento,
@@ -73,9 +67,10 @@ export function EstudianteForm({ estudiante, loading = false, error, onSubmit, o
           type="text"
           placeholder="Cedula de identidad"
           className="w-full px-3 py-2 border rounded-lg"
-          value={codigo}
-          onChange={e => setCodigo(e.target.value)}
+          value={cedulaIdentidad}
+          onChange={e => setCedulaIdentidad(e.target.value)}
           disabled={!!estudiante}
+          maxLength={8}
           required
         />
 

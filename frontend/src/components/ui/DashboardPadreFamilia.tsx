@@ -75,7 +75,7 @@ export function DashboardPadreFamilia() {
         </span>
       );
     }
-    
+
     if (rel.observacion === "Solicitado") {
       return (
         <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
@@ -83,7 +83,7 @@ export function DashboardPadreFamilia() {
         </span>
       );
     }
-    
+
     return (
       <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800 border border-red-200">
         ❌ Rechazado
@@ -125,7 +125,7 @@ export function DashboardPadreFamilia() {
             {rel.estudiante.curso?.nombre} ({rel.estudiante.curso?.nivel})
           </span>
         </div>
-        
+
         <div className="flex items-center justify-between">
           <span className="text-sm text-gray-600">Parentesco:</span>
           {getParentescoChip(rel.parentesco)}
@@ -146,7 +146,7 @@ export function DashboardPadreFamilia() {
 
       {/* Acciones */}
       <div className="flex gap-2 pt-4 border-t border-gray-100">
-        {!rel.estado && rel.observacion === "Solicitado" && (
+        {!rel.estado ? (
           <button
             onClick={() => handleCancelarSolicitud(rel.id)}
             disabled={loadingCancel === rel.id}
@@ -154,9 +154,7 @@ export function DashboardPadreFamilia() {
           >
             {loadingCancel === rel.id ? "Cancelando..." : "Cancelar solicitud"}
           </button>
-        )}
-
-        {rel.estado && (
+        ) : (
           <button
             onClick={() => {
               setSelectedEstudiante(rel.estudiante);
@@ -175,17 +173,16 @@ export function DashboardPadreFamilia() {
   const FilterChip = ({ type, label, count, active }: { type: any, label: string, count: number, active: boolean }) => (
     <button
       onClick={() => setActiveFilter(type)}
-      className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border ${
-        active
-          ? type === 'aceptadas' 
+      className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border ${active
+          ? type === 'aceptadas'
             ? 'bg-green-100 text-green-800 border-green-300 shadow-sm'
             : type === 'pendientes'
-            ? 'bg-yellow-100 text-yellow-800 border-yellow-300 shadow-sm'
-            : type === 'rechazadas'
-            ? 'bg-red-100 text-red-800 border-red-300 shadow-sm'
-            : 'bg-blue-100 text-blue-800 border-blue-300 shadow-sm'
+              ? 'bg-yellow-100 text-yellow-800 border-yellow-300 shadow-sm'
+              : type === 'rechazadas'
+                ? 'bg-red-100 text-red-800 border-red-300 shadow-sm'
+                : 'bg-blue-100 text-blue-800 border-blue-300 shadow-sm'
           : 'bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200'
-      }`}
+        }`}
     >
       {label} <span className="ml-1 bg-white bg-opacity-50 px-1.5 py-0.5 rounded-full text-xs">{count}</span>
     </button>
@@ -207,29 +204,29 @@ export function DashboardPadreFamilia() {
           {/* Filtros con chips */}
           <div className="mb-8">
             <div className="flex flex-wrap gap-3">
-              <FilterChip 
-                type="todas" 
-                label="Todas" 
-                count={relaciones.length} 
-                active={activeFilter === 'todas'} 
+              <FilterChip
+                type="todas"
+                label="Todas"
+                count={relaciones.length}
+                active={activeFilter === 'todas'}
               />
-              <FilterChip 
-                type="pendientes" 
-                label="Pendientes" 
-                count={solicitadas.length} 
-                active={activeFilter === 'pendientes'} 
+              <FilterChip
+                type="pendientes"
+                label="Pendientes"
+                count={solicitadas.length}
+                active={activeFilter === 'pendientes'}
               />
-              <FilterChip 
-                type="aceptadas" 
-                label="Aceptados" 
-                count={aceptadas.length} 
-                active={activeFilter === 'aceptadas'} 
+              <FilterChip
+                type="aceptadas"
+                label="Aceptados"
+                count={aceptadas.length}
+                active={activeFilter === 'aceptadas'}
               />
-              <FilterChip 
-                type="rechazadas" 
-                label="Rechazados" 
-                count={rechazadas.length} 
-                active={activeFilter === 'rechazadas'} 
+              <FilterChip
+                type="rechazadas"
+                label="Rechazados"
+                count={rechazadas.length}
+                active={activeFilter === 'rechazadas'}
               />
             </div>
           </div>
@@ -243,7 +240,7 @@ export function DashboardPadreFamilia() {
                   No hay solicitudes {activeFilter !== 'todas' && ` ${activeFilter}`}
                 </h3>
                 <p className="text-gray-500">
-                  {activeFilter === 'todas' 
+                  {activeFilter === 'todas'
                     ? "No tienes ninguna solicitud de vinculación."
                     : `No tienes solicitudes ${activeFilter} en este momento.`
                   }
@@ -254,8 +251,8 @@ export function DashboardPadreFamilia() {
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-gray-900">
                     {activeFilter === 'todas' ? 'Todas las solicitudes' :
-                     activeFilter === 'pendientes' ? 'Solicitudes pendientes' :
-                     activeFilter === 'aceptadas' ? 'Estudiantes aceptados' : 'Solicitudes rechazadas'}
+                      activeFilter === 'pendientes' ? 'Solicitudes pendientes' :
+                        activeFilter === 'aceptadas' ? 'Estudiantes aceptados' : 'Solicitudes rechazadas'}
                   </h2>
                   <span className="text-sm text-gray-500">
                     {relacionesFiltradas.length} {relacionesFiltradas.length === 1 ? 'resultado' : 'resultados'}
@@ -308,9 +305,9 @@ export function DashboardPadreFamilia() {
 
       {/* Modal con Documentos del Estudiante */}
       {showModal && selectedEstudiante && (
-        <Modal 
-          onClose={() => setShowModal(false)} 
-          title={`Documentos de ${selectedEstudiante.nombres} ${selectedEstudiante.apellidos}`}
+        <Modal
+          onClose={() => setShowModal(false)}
+          title={`Documentos de Presentados`}
         >
           <DocumentosEstudiantePanel estudiante={selectedEstudiante} />
         </Modal>

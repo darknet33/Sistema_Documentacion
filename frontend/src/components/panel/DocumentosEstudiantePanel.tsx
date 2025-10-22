@@ -4,6 +4,7 @@ import { useDocumentosEstudiante } from "../../hooks/useDocumentoEstudiantePadre
 import { DocumentosEstudianteTable } from "../tables/DocumentosEstudianteTable";
 import { EntregaDocumentoForm } from "../forms/EntregaDocumentoForm";
 import { LoadingScreen } from "../ui/LoadingScreen";
+import { useNotification } from "../../context/NotificationContext";
 
 interface Props {
   estudiante: EstudianteOut;
@@ -14,21 +15,43 @@ export function DocumentosEstudiantePanel({ estudiante }: Props) {
     documentosRequeridosPorEstudiante,
     createDocumentoEstudiante,
     deleteDocumentoEstudiante,
+    forwardDocumentoEstudiante,
     loading,
   } = useDocumentosEstudiante(estudiante.id, estudiante.curso_id);
 
   const [selectedDoc, setSelectedDoc] = useState<number | null>(null);
+  const [docEstudiante, setDocEstudiante] = useState<number | null>(null);
 
   const handleEntregar = (docId: number) => setSelectedDoc(docId);
-  const handleCancelEntrega = () => setSelectedDoc(null);
+  const handleReenviar = (id: number) => setDocEstudiante(id);
+  const handleCancelEntrega = () => { setSelectedDoc(null); setDocEstudiante(null) };
+  const { setNotification } = useNotification()
 
   const handleSubmitEntrega = async (formData: FormData) => {
-    await createDocumentoEstudiante(formData);
-    setSelectedDoc(null);
+    try {
+      await createDocumentoEstudiante(formData);
+      setSelectedDoc(null);
+      setNotification({ message: "Documento enviado Correctamente", type: "success" })
+    } catch (error) {
+      console.log(error)
+      setNotification({ message: "Fallo al Enviar intente mas tarde", type: "error" })
+
+    }
   };
 
-  const handleDeleteEntrega = async (docId: number) => {
-    await deleteDocumentoEstudiante(docId);
+  const handleSubmitReenviar = async (id: number, archivo: File) => {
+    try {
+      await forwardDocumentoEstudiante(id, archivo)
+      setDocEstudiante(null);
+      setNotification({ message: "Documento reenviado correctamente", type: "success" })
+    } catch (error) {
+      console.log(error)
+      setNotification({ message: "Fallo al reenviar intente mas tarde", type: "error" })
+    }
+  };
+
+  const handleDeleteEntrega = async (id: number) => {
+    await deleteDocumentoEstudiante(id);
     setSelectedDoc(null);
   };
 
@@ -42,7 +65,7 @@ export function DocumentosEstudiantePanel({ estudiante }: Props) {
   if (loading) return <LoadingScreen />;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       {/* Header del estudiante - Versión corregida */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 mb-8 text-white shadow-lg">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
@@ -125,7 +148,7 @@ export function DocumentosEstudiantePanel({ estudiante }: Props) {
               </p>
             </div>
 
-            {selectedDoc && (
+            {selectedDoc || docEstudiante && (
               <button
                 onClick={handleCancelEntrega}
                 className="px-4 py-2 text-sm text-gray-700 hover:text-gray-900 font-medium border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200 bg-white"
@@ -137,16 +160,18 @@ export function DocumentosEstudiantePanel({ estudiante }: Props) {
         </div>
 
         <div className="p-6">
-          {selectedDoc ? (
+          {selectedDoc || docEstudiante ? (
             <div className="bg-blue-50 rounded-xl p-6 border border-blue-100">
               <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
                 <span className="text-blue-600">📄</span>
                 Entregar Documento
               </h3>
               <EntregaDocumentoForm
+                docEstudianteId={docEstudiante}
                 estudianteId={estudiante.id}
-                catalogoDocumentoId={selectedDoc}
+                catalogoDocumentoId={selectedDoc !== null ? selectedDoc : 0}
                 onSubmit={handleSubmitEntrega}
+                onForeward={handleSubmitReenviar}
               />
             </div>
           ) : (
@@ -154,6 +179,7 @@ export function DocumentosEstudiantePanel({ estudiante }: Props) {
               documentos={documentosRequeridosPorEstudiante}
               onEntregar={handleEntregar}
               onDelete={handleDeleteEntrega}
+              onReenviar={handleReenviar}
             />
           )}
         </div>

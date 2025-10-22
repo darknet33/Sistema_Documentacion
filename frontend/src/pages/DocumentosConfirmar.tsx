@@ -2,16 +2,16 @@ import { useState, useMemo } from "react";
 import { LoadingScreen } from "../components";
 import { PageLayout } from "../layout/PageLayout";
 import { API_BASE_URL } from "../config/api";
-import { useDocumentoEstudianteAll } from "../hooks/useDocumentoEstudianteAdmin";
+import { useDocumentoEstudiante } from "../context/DocumentoEstudianteContext";
 
 export default function DocumentosConfirmar() {
   const {
-    documentosPorConfirmar,
+    documentosFiltrados,
     aprobarDocumento,
     rechazarDocumento,
     loading,
     error,
-  } = useDocumentoEstudianteAll();
+  } = useDocumentoEstudiante();
 
   // Estados para modales
   const [selectedDoc, setSelectedDoc] = useState<number | null>(null);
@@ -63,31 +63,16 @@ export default function DocumentosConfirmar() {
     }
   };
 
-  // --- Filtrado por código y curso ---
-  const documentosFiltrados = useMemo(() => {
-    return documentosPorConfirmar.filter((doc) => {
-      const codigoMatch = busquedaCodigo
-        ? doc.estudiante?.cedula_identidad?.includes(busquedaCodigo)
-        : true;
-
-      const cursoMatch = cursoSeleccionado
-        ? `${doc.estudiante?.curso?.nombre}-${doc.estudiante?.curso?.nivel}` === cursoSeleccionado
-        : true;
-
-      return codigoMatch && cursoMatch;
-    });
-  }, [documentosPorConfirmar, busquedaCodigo, cursoSeleccionado]);
-
   // --- Lista de cursos disponibles para chips ---
   const cursosDisponibles = useMemo(() => {
     const cursosSet = new Set<string>();
-    documentosPorConfirmar.forEach((doc) => {
+    documentosFiltrados.documentosPorConfirmar.forEach((doc) => {
       if (doc.estudiante?.curso) {
         cursosSet.add(`${doc.estudiante.curso.nombre}-${doc.estudiante.curso.nivel}`);
       }
     });
     return Array.from(cursosSet);
-  }, [documentosPorConfirmar]);
+  }, [documentosFiltrados]);
 
   return (
     <PageLayout title="Documentos Enviados por Confirmar">
@@ -120,11 +105,11 @@ export default function DocumentosConfirmar() {
           </div>
         </div>
 
-        {!loading && documentosFiltrados.length === 0 && (
+        {!loading && !documentosFiltrados && (
           <p className="text-gray-500">No hay documentos pendientes de confirmar.</p>
         )}
 
-        {documentosFiltrados.map((doc) => (
+        {documentosFiltrados.documentosPorConfirmar.map((doc) => (
           <div
             key={doc.id}
             className="border border-gray-300 rounded-lg shadow-sm p-4 flex flex-col gap-3 bg-white"

@@ -26,11 +26,12 @@ class CatalogoDocumetosOut(BaseModel):
 class DocumentoEstudianteBase(BaseModel):
     estudiante_id: int
     catalogo_documento_id: int
-    entregado: Optional[bool] = False
+    entregado: Optional[bool] = None
     fecha_entrega: Optional[date] = None
     archivo_digital: Optional[str] = None
     fecha_vencimiento: Optional[date] = None
     observaciones: Optional[str] = None
+
 class DocumentoEstudianteCreate(DocumentoEstudianteBase):
     pass
 

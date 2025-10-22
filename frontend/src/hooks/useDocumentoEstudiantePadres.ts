@@ -78,7 +78,7 @@ export function useDocumentosEstudiante(estudianteId: number, cursoId: number) {
       return {
         ...req,
         // Convertir el resultado de find a booleano de forma concisa
-        entregado: !!entregado,
+        entregado: !entregado,
         // Si no se encuentra, es null.
         documento: entregado || null,
       };

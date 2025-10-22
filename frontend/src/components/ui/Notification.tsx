@@ -23,7 +23,7 @@ export function Notification() {
 
   return (
     <div
-      className={`fixed top-4 right-4 px-4 py-2 text-white rounded shadow-lg ${bgColor}`}
+      className={`fixed top-4 right-4 px-4 py-2 z-100 text-white rounded shadow-lg ${bgColor}`}
     >
       {notification.message}
     </div>

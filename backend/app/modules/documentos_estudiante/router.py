@@ -31,7 +31,7 @@ def listar_Docuentos_estudiantes(skip: int = Query(0), limit: int = Query(100), 
 # --- Listar documentos de un estudiante ---
 @router.get("/estudiante/{estudiante_id}", response_model=list[schemas.DocumentoEstudianteOut])
 def get_by_estudiante(estudiante_id: int, db: Session = Depends(get_db)):
-    return service.get_by_estudiante(db, estudiante_id)
+    return service.get_documento_estudiante_by_estudiante(db, estudiante_id)
 
 # --- Crear documento ---
 @router.post("/", response_model=schemas.DocumentoEstudianteOut, status_code=201)

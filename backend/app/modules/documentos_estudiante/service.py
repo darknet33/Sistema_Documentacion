@@ -8,6 +8,13 @@ from datetime import date
 def get_all_documento_estudiante(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.DocumentoEstudiante).offset(skip).limit(limit).all()
 
+def get_documento_estudiante_by_id(db: Session, doc_id: int):
+    return db.query(models.DocumentoEstudiante).get(doc_id)
+
+
+def get_documento_estudiante_by_estudiante(db: Session, estudiante_id: int):
+    return db.query(models.DocumentoEstudiante).filter_by(estudiante_id=estudiante_id).all()
+
 def create_documento_estudiante(db: Session, data: schemas.DocumentoEstudianteCreate):
     # Evitar duplicados exactos
     existente = db.query(models.DocumentoEstudiante).filter_by(
@@ -23,25 +30,22 @@ def create_documento_estudiante(db: Session, data: schemas.DocumentoEstudianteCr
     db.refresh(nuevo)
     return nuevo
 
-def get_documento_estudiante_by_id(db: Session, doc_id: int):
-    return db.query(models.DocumentoEstudiante).get(doc_id)
-
-
-def get_by_estudiante(db: Session, estudiante_id: int):
-    return db.query(models.DocumentoEstudiante).filter_by(estudiante_id=estudiante_id).all()
-
-
-def update_documento_estudiante(db: Session, doc_id: int, update: schemas.DocumentoEstudianteUpdate):
+# --- Reenviar Documento ---
+def reenviar_documento(db: Session, doc_id: int, archivo_url: str):
     doc = db.query(models.DocumentoEstudiante).get(doc_id)
     if not doc:
-        raise HTTPException(status_code=404, detail="No encontrado")
-    for k, v in update.dict(exclude_unset=True).items():
-        setattr(doc, k, v)
+        raise HTTPException(status_code=404, detail="Documento no encontrado")
+
+    doc.archivo_digital = archivo_url
+    doc.entregado = False
+    doc.observaciones = "Enviado por Confirmar"
+    doc.fecha_vencimiento = None
+    doc.fecha_entrega = today_bolivia()
+
     db.add(doc)
     db.commit()
     db.refresh(doc)
     return doc
-
 
 def delete_documento_estudiante(db: Session, doc_id: int):
     doc = db.query(models.DocumentoEstudiante).get(doc_id)
@@ -86,19 +90,3 @@ def rechazar_documento(db: Session, doc_id: int, observacion: str):
     return doc
 
 
-# --- Reenviar Documento ---
-def reenviar_documento(db: Session, doc_id: int, archivo_url: str):
-    doc = db.query(models.DocumentoEstudiante).get(doc_id)
-    if not doc:
-        raise HTTPException(status_code=404, detail="Documento no encontrado")
-
-    doc.archivo_digital = archivo_url
-    doc.entregado = True
-    doc.observaciones = "Enviado por Confirmar"
-    doc.fecha_vencimiento = None
-    doc.fecha_entrega = today_bolivia()
-
-    db.add(doc)
-    db.commit()
-    db.refresh(doc)
-    return doc

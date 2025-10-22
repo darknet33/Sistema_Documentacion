@@ -1,12 +1,14 @@
 import { useState } from "react";
 
 interface Props {
+  docEstudianteId: number | null;
   estudianteId: number;
   catalogoDocumentoId: number;
   onSubmit: (formData: FormData) => Promise<void>; // ahora recibe FormData
+  onForeward: (id: number, archivo: File) => Promise<void>; // ahora recibe FormData
 }
 
-export function EntregaDocumentoForm({ estudianteId, catalogoDocumentoId, onSubmit }: Props) {
+export function EntregaDocumentoForm({ docEstudianteId, estudianteId, catalogoDocumentoId, onSubmit, onForeward }: Props) {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -42,9 +44,22 @@ export function EntregaDocumentoForm({ estudianteId, catalogoDocumentoId, onSubm
       setLoading(false);
     }
   };
+  const handleForeward = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!file) return alert("Selecciona un archivo");
+    setLoading(true);
+    try {
+      if (docEstudianteId!==null) await onForeward(docEstudianteId, file);
+      setFile(null);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3 border p-4 rounded shadow-sm">
+    <form onSubmit={docEstudianteId===null ?  handleSubmit: handleForeward} className="flex flex-col gap-3 border p-4 rounded shadow-sm">
       <div
         className="border-2 border-dashed border-gray-300 p-6 rounded text-center cursor-pointer hover:border-blue-400"
         onDrop={handleDrop}
