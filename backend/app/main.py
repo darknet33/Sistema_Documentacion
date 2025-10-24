@@ -50,5 +50,6 @@ app.include_router(modules_router)
 
 @app.get("/", tags=["Root"])
 def read_root():
+    print("Sistema de Documentacion con Alta para funcionar con API ok")
     """Endpoint de prueba para verificar que la API está funcionando."""
     return {"message": "Servicio de API iniciado. Revisa /docs para la documentación."}

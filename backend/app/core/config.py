@@ -25,14 +25,28 @@ class Settings(BaseSettings):
     @computed_field(return_type=str)
     @property
     def SQLALCHEMY_DATABASE_URL(self) -> str:
-        """Construye la URL de conexión a la base de datos automáticamente."""
+        """Construye la URL de conexión automáticamente."""
         if self.DATABASE_URL:
             return self.DATABASE_URL
 
         if self.DB_ENGINE == "sqlite":
             return f"sqlite:///{self.DB_NAME}"
 
-        # Ejemplo: postgresql, mysql, etc.
+        # SQL Server con pyodbc
+        if "mssql+pyodbc" in self.DB_ENGINE:
+            driver = "ODBC Driver 18 for SQL Server"
+            return (
+                f"mssql+pyodbc://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+                f"?driver={driver.replace(' ', '+')}&TrustServerCertificate=yes"
+            )
+            
+        if "mysql+pymysql" in self.DB_ENGINE:
+            return (
+                f"{self.DB_ENGINE}://{self.DB_USER}:{self.DB_PASSWORD}@"
+                f"{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+            )
+
+        # Otros motores (PostgreSQL, MySQL, etc.)
         return (
             f"{self.DB_ENGINE}://{self.DB_USER}:{self.DB_PASSWORD}@"
             f"{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
@@ -42,5 +56,6 @@ class Settings(BaseSettings):
         env_file = ".env"
         env_file_encoding = "utf-8"
 
-# Instancia global de configuración
-settings = Settings() 
+
+# Instancia global
+settings = Settings()
