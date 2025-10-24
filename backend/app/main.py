@@ -4,6 +4,7 @@ from app.core.database import Base, engine
 from app.modules import router as modules_router
 from fastapi.staticfiles import StaticFiles
 import os
+from fastapi.responses import FileResponse
 
 # Crea la aplicación FastAPI
 app = FastAPI(
@@ -48,8 +49,6 @@ def on_startup():
 # Incluir todos los routers automáticamente
 app.include_router(modules_router)
 
-@app.get("/", tags=["Root"])
-def read_root():
-    print("Sistema de Documentacion con Alta para funcionar con API ok")
-    """Endpoint de prueba para verificar que la API está funcionando."""
-    return {"message": "Servicio de API iniciado. Revisa /docs para la documentación."}
+
+# Sirve index.html desde /
+app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="frontend")

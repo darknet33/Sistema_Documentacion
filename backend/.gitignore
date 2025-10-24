@@ -1,4 +1,3 @@
-app/static/*
 
 
 # ============================================
@@ -24,11 +23,9 @@ __pycache__/
 # 🧰 Archivos de configuración y entorno
 # ============================================
 *.env
-.env.*
 *.ini
 *.toml
 *.cfg
-*.yaml
 *.yml
 
 # ============================================
@@ -76,16 +73,6 @@ migrations/
 .idea/
 *.sublime-project
 *.sublime-workspace
-
-# ============================================
-# 🧪 Docker / containers
-# ============================================
-docker-compose.override.yml
-*.pid
-*.seed
-*.bak
-*.orig
-*.rej
 
 # ============================================
 # 📦 Archivos generados
