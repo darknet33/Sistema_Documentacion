@@ -31,7 +31,7 @@ export function useDocumentoEstudianteAll() {
         );
 
         const aprobados = documentosEntregados.filter(
-            (doc) => doc.observaciones === 'Recepcionado y Verificado'
+            (doc) => doc.observaciones === 'Recepcionado y Verificado' && doc.fecha_vencimiento==="Sin vencimiento"
         );
 
         const porVencer = documentosEntregados.filter(

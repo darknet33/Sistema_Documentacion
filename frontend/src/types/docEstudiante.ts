@@ -1,6 +1,7 @@
 import type { DocumentoRequeridoOut } from "./docRequerido";
 import type { EstudianteOut } from "./estudiante";
 import type { DocumentOut } from "./document";
+
 export interface DocumentoEstudianteOut{
     id: number; // id del registro en documentos_estudiantes
     estudiante_id: number;

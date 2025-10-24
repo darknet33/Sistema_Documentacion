@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { NewDocument, DocumentFormProps } from '../../types/document';
+import { capitalizeWords } from "../../helpers/funcionesGenerales"
 
 export function DocumentForm({
   document,
@@ -34,8 +35,8 @@ export function DocumentForm({
     }
 
     const data: NewDocument = {
-      nombre,
-      descripcion,
+      nombre: capitalizeWords(nombre),
+      descripcion: capitalizeWords(descripcion),
       es_obligatorio: esObligatorio,
     };
 
