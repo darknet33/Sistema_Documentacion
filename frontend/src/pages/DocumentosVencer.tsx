@@ -1,10 +1,11 @@
 import { useMemo, useState } from "react";
-import { API_BASE_URL } from "../config/api";
-import { Search, Filter, FileText, Eye, MessageSquare } from "lucide-react";
+import { Search, Filter, FileText, MessageSquare } from "lucide-react";
 import { LoadingScreen } from "../components"
 import { useDocumentoEstudianteAll } from "../hooks/useDocumentoEstudianteAdmin"
 import { PageLayout } from "../layout/PageLayout"
 import { useNotification } from "../context/NotificationContext";
+import { VerDocumentoDocumentoModal } from "../components";
+
 
 export default function DocumentosVencer() {
 
@@ -189,17 +190,9 @@ export default function DocumentosVencer() {
 
                 {/* Acciones */}
                 <div className="flex flex-col sm:flex-row lg:flex-col gap-2 lg:items-end">
-                  {doc.archivo_digital && (
-                    <a
-                      href={`${API_BASE_URL}${doc.archivo_digital}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium"
-                    >
-                      <Eye className="h-4 w-4" />
-                      Ver documento
-                    </a>
-                  )}
+                  {doc.archivo_digital && 
+                    <VerDocumentoDocumentoModal archivo={doc.archivo_digital} />
+                  }
                   <div className="flex gap-2">
                     <button
                       onClick={() => {

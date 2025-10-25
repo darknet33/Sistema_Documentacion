@@ -1,9 +1,8 @@
 import { useState, useMemo } from "react";
-import { LoadingScreen } from "../components";
+import { LoadingScreen, VerDocumentoDocumentoModal } from "../components";
 import { PageLayout } from "../layout/PageLayout";
-import { API_BASE_URL } from "../config/api";
 import { useDocumentoEstudiante } from "../context/DocumentoEstudianteContext";
-import { Search, Filter, FileText, Eye, User, ChevronDown, ChevronUp, CheckCircle } from "lucide-react";
+import { Search, Filter, FileText, User, ChevronDown, ChevronUp, CheckCircle } from "lucide-react";
 import type { DocumentoEstudianteOut } from "../types/docEstudiante";
 
 interface GrupoEstudiante {
@@ -266,17 +265,7 @@ export default function DocumentosAprobados() {
                           </div>
 
                           {/* Acción: Ver documento */}
-                          {doc.archivo_digital && (
-                            <a
-                              href={`${API_BASE_URL}${doc.archivo_digital}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium flex-shrink-0"
-                            >
-                              <Eye className="h-4 w-4" />
-                              Ver documento
-                            </a>
-                          )}
+                          {doc.archivo_digital && <VerDocumentoDocumentoModal archivo={doc.archivo_digital} />}
                         </div>
                       ))}
                     </div>

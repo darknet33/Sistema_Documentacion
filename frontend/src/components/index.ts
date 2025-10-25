@@ -3,6 +3,7 @@
 //Modal
 
 export { Modal } from "./modal/Modal"
+export { VerDocumentoDocumentoModal } from "./modal/VerDocumentoModal"
 
 
 // Forms

@@ -1,9 +1,8 @@
 import { useState, useMemo } from "react";
-import { LoadingScreen, Modal } from "../components";
+import { LoadingScreen, Modal, VerDocumentoDocumentoModal } from "../components";
 import { PageLayout } from "../layout/PageLayout";
-import { API_BASE_URL } from "../config/api";
 import { useDocumentoEstudiante } from "../context/DocumentoEstudianteContext";
-import { Search, Filter, FileText, CheckCircle, XCircle, Eye, Calendar } from "lucide-react";
+import { Search, Filter, FileText, CheckCircle, XCircle, Calendar } from "lucide-react";
 
 export default function DocumentosConfirmar() {
   const {
@@ -79,9 +78,9 @@ export default function DocumentosConfirmar() {
   const documentosFiltradosLista = useMemo(() => {
     return documentosFiltrados.documentosPorConfirmar.filter(doc => {
       const matchCodigo = doc.estudiante?.cedula_identidad?.toLowerCase().includes(busquedaCodigo.toLowerCase());
-      const matchCurso = !cursoSeleccionado || 
+      const matchCurso = !cursoSeleccionado ||
         `${doc.estudiante?.curso?.nombre}-${doc.estudiante?.curso?.nivel}` === cursoSeleccionado;
-      
+
       return matchCodigo && matchCurso;
     });
   }, [documentosFiltrados.documentosPorConfirmar, busquedaCodigo, cursoSeleccionado]);
@@ -122,11 +121,10 @@ export default function DocumentosConfirmar() {
                 <button
                   key={curso}
                   onClick={() => setCursoSeleccionado(curso === cursoSeleccionado ? null : curso)}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                    curso === cursoSeleccionado
-                      ? "bg-indigo-600 text-white shadow-sm"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${curso === cursoSeleccionado
+                    ? "bg-indigo-600 text-white shadow-sm"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
                 >
                   {curso}
                 </button>
@@ -159,8 +157,8 @@ export default function DocumentosConfirmar() {
             <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <p className="text-gray-500 text-lg font-medium">No hay documentos por confirmar</p>
             <p className="text-gray-400 text-sm mt-1">
-              {busquedaCodigo || cursoSeleccionado 
-                ? "Intenta con otros filtros" 
+              {busquedaCodigo || cursoSeleccionado
+                ? "Intenta con otros filtros"
                 : "Los documentos aparecerán aquí cuando los estudiantes los envíen"
               }
             </p>
@@ -183,7 +181,7 @@ export default function DocumentosConfirmar() {
                         <h3 className="font-semibold text-gray-900 text-lg mb-1">
                           {doc.catalogo_documento?.nombre}
                         </h3>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
                           <div className="space-y-1">
                             <p className="text-gray-600">
@@ -216,17 +214,9 @@ export default function DocumentosConfirmar() {
 
                   {/* Acciones */}
                   <div className="flex flex-col sm:flex-row lg:flex-col gap-2 lg:items-end">
-                    {doc.archivo_digital && (
-                      <a
-                        href={`${API_BASE_URL}${doc.archivo_digital}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium"
-                      >
-                        <Eye className="h-4 w-4" />
-                        Ver documento
-                      </a>
-                    )}
+                    {doc.archivo_digital &&
+                      <VerDocumentoDocumentoModal archivo={doc.archivo_digital} />
+                    }
                     <div className="flex gap-2">
                       <button
                         onClick={() => {
@@ -258,123 +248,123 @@ export default function DocumentosConfirmar() {
 
         {/* --- MODAL APROBAR --- */}
         {showAprobarModal && (
-          <Modal onClose={()=>{setShowAprobarModal(false)}}>
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-5 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-                    <CheckCircle className="h-5 w-5 text-green-600" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Aprobar Documento</h2>
-                    <p className="text-sm text-gray-600">Confirma la aprobación de este documento</p>
-                  </div>
+          <Modal onClose={() => { setShowAprobarModal(false) }}>
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-5 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
                 </div>
-
-                <div className="space-y-4">
-                  <label className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={usarFecha}
-                      onChange={(e) => setUsarFecha(e.target.checked)}
-                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                    <div>
-                      <span className="font-medium text-gray-900">Asignar fecha de vencimiento</span>
-                      <p className="text-sm text-gray-500">Opcional - El documento vencerá en la fecha seleccionada</p>
-                    </div>
-                  </label>
-
-                  {usarFecha && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Fecha de vencimiento
-                      </label>
-                      <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                        <input
-                          type="date"
-                          value={fechaVencimiento}
-                          onChange={(e) => setFechaVencimiento(e.target.value)}
-                          className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-                          required
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex gap-3 mt-6 pt-4 border-t border-gray-200">
-                  <button
-                    onClick={() => {
-                      setShowAprobarModal(false);
-                      resetForm();
-                    }}
-                    className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    onClick={handleAprobar}
-                    className="flex-1 px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium flex items-center justify-center gap-2"
-                  >
-                    <CheckCircle className="h-4 w-4" />
-                    Confirmar Aprobación
-                  </button>
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">Aprobar Documento</h2>
+                  <p className="text-sm text-gray-600">Confirma la aprobación de este documento</p>
                 </div>
               </div>
-            </Modal>
+
+              <div className="space-y-4">
+                <label className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={usarFecha}
+                    onChange={(e) => setUsarFecha(e.target.checked)}
+                    className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                  />
+                  <div>
+                    <span className="font-medium text-gray-900">Asignar fecha de vencimiento</span>
+                    <p className="text-sm text-gray-500">Opcional - El documento vencerá en la fecha seleccionada</p>
+                  </div>
+                </label>
+
+                {usarFecha && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Fecha de vencimiento
+                    </label>
+                    <div className="relative">
+                      <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <input
+                        type="date"
+                        value={fechaVencimiento}
+                        onChange={(e) => setFechaVencimiento(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                        required
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex gap-3 mt-6 pt-4 border-t border-gray-200">
+                <button
+                  onClick={() => {
+                    setShowAprobarModal(false);
+                    resetForm();
+                  }}
+                  className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleAprobar}
+                  className="flex-1 px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium flex items-center justify-center gap-2"
+                >
+                  <CheckCircle className="h-4 w-4" />
+                  Confirmar Aprobación
+                </button>
+              </div>
+            </div>
+          </Modal>
         )}
 
         {/* --- MODAL RECHAZAR --- */}
         {showRechazarModal && (
-          <Modal onClose={()=>{setShowRechazarModal(false)}}>
+          <Modal onClose={() => { setShowRechazarModal(false) }}>
             <div className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-5 h-10 bg-red-100 rounded-xl flex items-center justify-center">
-                    <XCircle className="h-5 w-5 text-red-600" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Rechazar Documento</h2>
-                    <p className="text-sm text-gray-600">Especifica el motivo del rechazo</p>
-                  </div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-5 h-10 bg-red-100 rounded-xl flex items-center justify-center">
+                  <XCircle className="h-5 w-5 text-red-600" />
                 </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Observación (requerida)
-                    </label>
-                    <textarea
-                      value={observacion}
-                      onChange={(e) => setObservacion(e.target.value)}
-                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none"
-                      rows={3}
-                      placeholder="Describe el motivo del rechazo..."
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="flex gap-3 mt-6 pt-4 border-t border-gray-200">
-                  <button
-                    onClick={() => {
-                      setShowRechazarModal(false);
-                      resetForm();
-                    }}
-                    className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
-                  >
-                    Cancelar
-                  </button>
-                  
-                  <button
-                    onClick={handleRechazar}
-                    className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium flex items-center justify-center gap-2"
-                  >
-                    <XCircle className="h-4 w-4" />
-                    Confirmar Rechazo
-                  </button>
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">Rechazar Documento</h2>
+                  <p className="text-sm text-gray-600">Especifica el motivo del rechazo</p>
                 </div>
               </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Observación (requerida)
+                  </label>
+                  <textarea
+                    value={observacion}
+                    onChange={(e) => setObservacion(e.target.value)}
+                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none"
+                    rows={3}
+                    placeholder="Describe el motivo del rechazo..."
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6 pt-4 border-t border-gray-200">
+                <button
+                  onClick={() => {
+                    setShowRechazarModal(false);
+                    resetForm();
+                  }}
+                  className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                >
+                  Cancelar
+                </button>
+
+                <button
+                  onClick={handleRechazar}
+                  className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium flex items-center justify-center gap-2"
+                >
+                  <XCircle className="h-4 w-4" />
+                  Confirmar Rechazo
+                </button>
+              </div>
+            </div>
           </Modal>
         )}
       </div>
