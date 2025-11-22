@@ -38,8 +38,8 @@ export const useMenu = (userData: UserOut): MenuItem[] => {
         administrador: [
             createItem("Dashboard", <LayoutDashboard className="h-5 w-5" />, "/dashboard"),
             createItem("Usuarios", <Users className="h-5 w-5" />, "/usuarios"),
-            createItem("Cursos", <School className="h-5 w-5" />, "/cursos"),
             createItem("Documentos", <File className="h-5 w-5" />, "/documentos"),
+            createItem("Cursos", <School className="h-5 w-5" />, "/cursos"),
             createItem("Estudiantes", <GraduationCap className="h-5 w-5" />, "/estudiantes"),
             {
                 label: `Padres - Estudiantes (${countPadresPendientes})`, 

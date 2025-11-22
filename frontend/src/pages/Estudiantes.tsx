@@ -62,7 +62,7 @@ export default function Estudiantes() {
   };
 
   return (
-    <PageLayout title="Panel de Estudiantes">
+    <PageLayout title="Estudiantes">
       {showForm ? (
         <EstudianteForm
           estudiante={editEstudiante || undefined}

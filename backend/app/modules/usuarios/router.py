@@ -32,7 +32,7 @@ def get_user(user_id: int = Path(...), db: Session = Depends(get_db),
 def create_user(user_in: schemas.UserCreate, db: Session = Depends(get_db)):
     """Crea un nuevo usuario."""
     if service.get_user_by_email(db, email=user_in.email):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El email ya está registrado.")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Correo electrónico ya está registrado.")
     
     new_user = service.create_user(db, user=user_in)
     return new_user

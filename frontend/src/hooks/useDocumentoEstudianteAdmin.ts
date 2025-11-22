@@ -31,13 +31,14 @@ export function useDocumentoEstudianteAll() {
         );
 
         const aprobados = documentosEntregados.filter(
-            (doc) => doc.observaciones === 'Recepcionado y Verificado' && doc.fecha_vencimiento==="Sin vencimiento"
+            (doc) => doc.observaciones === 'Recepcionado y Verificado' && doc.estadoVencimiento==='Vigente'
         );
 
         const porVencer = documentosEntregados.filter(
             (doc) =>
-                doc.estadoVencimiento === 'Próximo a vencer' ||
-                doc.estadoVencimiento === 'Vencido'
+                (doc.estadoVencimiento === 'Próximo a vencer' ||
+                doc.estadoVencimiento === 'Vencido') &&
+                doc.observaciones === 'Recepcionado y Verificado'
         );
 
         // Retorna un objeto con todos los arrays
@@ -67,7 +68,7 @@ export function useDocumentoEstudianteAll() {
     // ❌ Rechazar documento
     const rechazarDocumento = async (id: number, observacion: string) => {
         try {
-            const updated = await rechazarDocumentoApi(id, observacion)
+            const updated = await rechazarDocumentoApi(id, "Rechazado - " + observacion)
             setDocumentosEntregados((prev) =>
                 prev.map((doc) => (doc.id === id ? updated : doc))
             )

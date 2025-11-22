@@ -79,7 +79,7 @@ const Padres = () => {
     };
 
     return (
-        <PageLayout title="Panel de Padres de Familia">
+        <PageLayout title="Padres de Familia">
             {showForm ? (
                 <PadreForm
                     user={editUser || undefined}

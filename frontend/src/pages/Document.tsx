@@ -107,7 +107,7 @@ const Document = () => {
     };
 
     return (
-        <PageLayout title='Catálogo de Documentos'>
+        <PageLayout title='Documentos'>
             {showForm ? (
                 <DocumentForm
                     document={editDocument || undefined}

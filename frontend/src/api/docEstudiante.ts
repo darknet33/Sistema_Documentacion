@@ -17,7 +17,7 @@ const calcularVencimiento = (data: DocumentoEstudianteOut[]) => {
 
   return data.map((doc) => {
     if (!doc.fecha_vencimiento) {
-      return { ...doc, estadoVencimiento: 'Sin vencimiento' }
+      return { ...doc, estadoVencimiento: 'Vigente' }
     }
 
     // Convierte y normaliza la fecha de vencimiento a medianoche para comparación de días.

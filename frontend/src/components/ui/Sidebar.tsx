@@ -20,9 +20,9 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Botón Hamburguesa (visible solo en móvil) */}
+      {/* Botón Hamburguesa (visible solo en móvil) - MOVIDO A LA DERECHA */}
       <button
-        className="md:hidden fixed top-6 left-6 z-50 p-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2"
+        className="md:hidden fixed top-4 left-2 z-20 p-3 bg-gradient-to-r from-indigo-400 to-indigo-800 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2"
         onClick={() => setIsOpen(!isOpen)}
       >
         {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -39,12 +39,12 @@ export function Sidebar() {
       {/* Sidebar */}
       <aside
         className={`
-                    fixed inset-y-0 left-0 z-40 w-80 bg-gradient-to-b from-white to-gray-50/80 backdrop-blur-sm shadow-2xl border-r border-gray-200/60
-                    transform transition-all duration-500 ease-in-out
-                    ${isOpen ? "translate-x-0" : "-translate-x-full"}
-                    md:translate-x-0 md:static md:flex md:flex-col
-                    overflow-hidden
-                `}
+          fixed inset-y-0 left-0 z-40 w-80 bg-gradient-to-b from-white to-gray-50/80 backdrop-blur-sm shadow-2xl border-r border-gray-200/60
+          transform transition-all duration-500 ease-in-out
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
+          md:translate-x-0 md:static md:flex md:flex-col
+          overflow-hidden
+        `}
       >
         <div className="flex flex-col h-full">
           {/* Header del Sidebar */}
@@ -53,14 +53,13 @@ export function Sidebar() {
               <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
                 <LayoutDashboard className="h-6 w-6 text-white" />
               </div>
-              <div>
-                <h1 className="font-bold text-lg text-gray-900 leading-tight">
+              <div className="flex-1 min-w-0">
+                <h1 className="font-bold text-lg text-gray-900 leading-tight truncate">
                   Sistema Control
                 </h1>
-                <p className="text-sm text-gray-600">Documentos Académicos</p>
+                <p className="text-sm text-gray-600 truncate">Documentos Académicos</p>
               </div>
             </div>
-
           </div>
 
           {/* Navegación */}

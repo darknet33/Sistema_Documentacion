@@ -1,0 +1,40 @@
+services:
+  db:
+    image: mysql
+    container_name: mysql_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: gyrx100PRE#2022
+      MYSQL_DATABASE: ${DB_NAME}
+      TZ: America/La_Paz
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+    volumes:
+      - db_data:/var/lib/mysql
+
+  app:
+    image: softroy/backend-app:latest
+    container_name: fastapi_app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: db
+      DB_PORT: ${DB_PORT}
+      TZ: America/La_Paz
+    volumes:
+      - .:/app
+
+volumes:
+  db_data:
