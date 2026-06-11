@@ -3,42 +3,42 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import Base, engine
 from app.modules import router as modules_router
 from fastapi.staticfiles import StaticFiles
+from app.core.config import settings
 import os
 import time
 from sqlalchemy.exc import OperationalError
-from fastapi.responses import FileResponse
 
-# Crea la aplicación FastAPI
 app = FastAPI(
     title="API Sistema Control Documentos FastAPI",
     description="Proyecto base con estructura modular.",
     version="1.0.0"
 )
 
-# Configuración de CORS
-origins = [
-    "http://localhost:5173",  # Frontend en Vite
-    "http://127.0.0.1:5173"   # Alternativa (a veces el navegador usa 127.0.0.1 en lugar de localhost)
-]
+# CORS
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,          # Orígenes permitidos
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],            # Métodos permitidos (GET, POST, PUT, DELETE...)
-    allow_headers=["*"],            # Headers permitidos
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Ruta absoluta a la carpeta 'static' dentro de 'app'
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # /path/to/backend/app
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
+os.makedirs(STATIC_DIR, exist_ok=True)
 
-# Montar la carpeta estática
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 
 @app.on_event("startup")
 def on_startup():
+    if settings.DB_ENGINE == "sqlite":
+        Base.metadata.create_all(bind=engine)
+        print("Base de datos SQLite lista.")
+        return
+
     print("Esperando a que MySQL esté listo...")
     retries = 60
     while retries > 0:
@@ -54,9 +54,9 @@ def on_startup():
         raise RuntimeError("No se pudo conectar a MySQL después de varios intentos")
 
 
-# Incluir todos los routers automáticamente
 app.include_router(modules_router)
 
 
-# Sirve index.html desde /
-app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="frontend")
+index_path = os.path.join(STATIC_DIR, "index.html")
+if os.path.exists(index_path):
+    app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="frontend")
