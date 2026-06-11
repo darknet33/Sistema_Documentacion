@@ -9,17 +9,14 @@ import time
 from sqlalchemy.exc import OperationalError
 
 app = FastAPI(
-    title="API Sistema Control Documentos FastAPI",
-    description="Proyecto base con estructura modular.",
-    version="1.0.0"
+    title=settings.APP_NAME,
+    description="API del Sistema de Documentación",
+    version=settings.APP_VERSION,
 )
-
-# CORS
-origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=settings.CORS_ORIGINS.split(","),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
