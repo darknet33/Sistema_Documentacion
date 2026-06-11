@@ -1,7 +1,0 @@
-docker run -d \
-  -p 3606:3306 \
-  -e MYSQL_ROOT_PASSWORD=gyrx100PRE#2022 \
-  -e MYSQL_DATABASE=SistemaDocumentos \
-  -v mysql_data:/var/lib/mysql \
-  --name mysql-container \
-  mysql:latest
