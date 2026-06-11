@@ -16,10 +16,14 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "your_secret_key"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 días
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 10080  # 7 días
 
-    # --- Configuración Adicional (opcional) ---
+    # --- Configuración CORS ---
+    CORS_ORIGINS: str = "*"
+
+    # --- Configuración Adicional ---
     APP_NAME: str = "Sistema Documentación"
+    APP_VERSION: str = "1.0.0"
     DEBUG: bool = True
 
     @computed_field(return_type=str)
